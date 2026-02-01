@@ -22,5 +22,30 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family:"Plus Jakarta Sans", sans-serif;
+}
+
+@theme {
+  --color-neutral-white: #ffffff;
+  --color-neutral-black: #333538;
+  --color-neutral-gray1: #7d8188;
+  --color-neutral-gray2: #e2e3e5;
+  --color-neutral-gray3: #edeff2;
+  --color-neutral-gray4: #f7f9fc;
+  --color-primary-main: #B0153D;
+  --color-primary-hover: #DC1C47;
+  --color-primary-surface: #FFF1F2;
+  --color-semantic-red1: #d32f2f;
+  --color-semantic-red2: #fdeaea;
+  --color-semantic-red3: #FC8285;
+  --color-semantic-green1: #027a48;
+  --color-semantic-green2: #038c56;
+  --color-semantic-green3: #d1fadf;
+  --color-semantic-yellow1: #a37b00;
+  --color-semantic-yellow2: #ba8b00;
+  --color-semantic-yellow3: #fff8e1;
+  --color-semantic-purple1: #5b21b6;
+  --color-semantic-purple2: #ede9fe;
+  --color-semantic-lightGreen1: #27c219;
+  --color-semantic-lightGreen1: #e9ffe7;
 }
