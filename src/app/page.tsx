@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "@/components/Common/Button/Button";
 import Card from "@/components/Common/Card";
 import { Calendar, CheckCircle, Database, Flame, InfoIcon, User2 } from "lucide-react";
@@ -61,9 +61,10 @@ export default function Home() {
               isFutureDisabled={false}
               isFilter
               placeholder="Choose Date Range"
-              icon={<Calendar />}
+              icon={<Calendar 
+              className="text-primary-main "/>}
               mode="range"
-              className="text-black"
+              className="text-primary-main border-primary-hover rounded-xl bg-primary-surface "
               onChange={(value) => {
                 if (value?.start && value?.end) {
                   setDateRange({
