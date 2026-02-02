@@ -26,9 +26,24 @@ export default function Home() {
 
       <div className="flex flex-col lg:flex-row gap-5">
         <div className="flex flex-col w-full lg:w-2/3 gap-3">
-          <div className="flex gap-2 border-b border-neutral-gray3">
-            <TabButton active={activeTab === "UNCLAIMED"} onClick={() => setActiveTab("UNCLAIMED")} label="Antrean Customer Baru" />
-            <TabButton active={activeTab === "CLAIMED"} onClick={() => setActiveTab("CLAIMED")} label="Sudah Diklaim" />
+          <div className="flex justify-between items-center border-b border-neutral-gray3">
+            <div className="flex gap-2">
+              <TabButton active={activeTab === "UNCLAIMED"} onClick={() => setActiveTab("UNCLAIMED")} label="Antrean Customer Baru" />
+              <TabButton active={activeTab === "CLAIMED"} onClick={() => setActiveTab("CLAIMED")} label="Sudah Diklaim" />
+            </div>
+
+            <Button
+              text="Reload"
+              variant="OUTLINE"
+              isLoading={vm.loading}
+              onClick={() => {
+                if (activeTab === "UNCLAIMED") {
+                  vm.fetchAllLeads(vm.leadsPage);
+                } else {
+                  vm.fetchMyLeads(vm.myLeadsPage);
+                }
+              }}
+            />
           </div>
 
           {activeTab === "UNCLAIMED" && (
@@ -51,7 +66,7 @@ export default function Home() {
               <div className="flex justify-center items-center gap-3 mt-4">
                 <Button text="Prev" variant="OUTLINE" disabled={vm.leadsPage === 1} onClick={() => vm.fetchAllLeads(vm.leadsPage - 1)} />
 
-                <span className="text-sm font-bold text-primary-hover">
+                <span className="text-sm font-bold text-">
                   Page {vm.leadsPage} / {vm.leadsTotalPages}
                 </span>
 
@@ -66,7 +81,7 @@ export default function Home() {
               <div className="flex justify-center items-center gap-3 mt-4">
                 <Button text="Prev" variant="OUTLINE" disabled={vm.myLeadsPage === 1} onClick={() => vm.fetchMyLeads(vm.myLeadsPage - 1)} />
 
-                <span className="text-sm font-bold text-primary-hover">
+                <span className="text-sm font-bold text-">
                   Page {vm.myLeadsPage} / {vm.myLeadsTotalPages}
                 </span>
 

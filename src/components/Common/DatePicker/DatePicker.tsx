@@ -3,11 +3,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Calendar, DateRange } from "react-date-range";
 import { createPortal } from "react-dom";
-import "react-date-range/dist/styles.css";
-import "react-date-range/dist/theme/default.css";
 import { cn, formatDate, formatFilterDate } from "@/utils/helpers";
 import { ChevronDown, XCircle } from "lucide-react";
 import Button from "../Button/Button";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
+import "@/styles/react-date-range.override.css";
 
 interface CustomDatePickerProps {
   placeholder: string;
@@ -86,13 +87,7 @@ function useDateState(value: string | undefined, isFilter: boolean) {
   };
 }
 
-function useDisplayValue(
-  isFilter: boolean,
-  mode: "single" | "range",
-  savedStart: Date | null,
-  savedEnd: Date | null,
-  formatDateTime: (d: Date | null, isValue: boolean) => string
-) {
+function useDisplayValue(isFilter: boolean, mode: "single" | "range", savedStart: Date | null, savedEnd: Date | null, formatDateTime: (d: Date | null, isValue: boolean) => string) {
   if (isFilter) {
     if (mode === "range" && savedStart && savedEnd) {
       return `${formatFilterDate(savedStart)} / ${formatFilterDate(savedEnd)}`;
@@ -107,18 +102,8 @@ function useDisplayValue(
   return savedStart ? formatDateTime(savedStart, false) : "";
 }
 
-function TimeColumn({
-  value,
-  onChange,
-  range,
-}: {
-  value: string;
-  onChange: (val: string) => void;
-  range: number;
-}) {
-  const items = Array.from({ length: range }, (_, i) =>
-    String(i).padStart(2, "0")
-  );
+function TimeColumn({ value, onChange, range }: { value: string; onChange: (val: string) => void; range: number }) {
+  const items = Array.from({ length: range }, (_, i) => String(i).padStart(2, "0"));
 
   return (
     <div className="flex flex-col h-[335px] overflow-y-auto rounded no-scrollbar">
@@ -137,26 +122,9 @@ function TimeColumn({
 }
 
 export default function CustomDatePicker(props: CustomDatePickerProps) {
-  const {
-    placeholder,
-    className,
-    icon,
-    mode = "single",
-    onChange,
-    value,
-    isFilter = false,
-    isFutureDisabled = false,
-  } = props;
+  const { placeholder, className, icon, mode = "single", onChange, value, isFilter = false, isFutureDisabled = false } = props;
 
-  const {
-    savedStart,
-    savedEnd,
-    savedTime,
-    setSavedStart,
-    setSavedEnd,
-    setSavedTime,
-    buildValue,
-  } = useDateState(value, isFilter);
+  const { savedStart, savedEnd, savedTime, setSavedStart, setSavedEnd, setSavedTime, buildValue } = useDateState(value, isFilter);
 
   const [tempStart, setTempStart] = useState<Date | null>(null);
   const [tempEnd, setTempEnd] = useState<Date | null>(null);
@@ -177,35 +145,49 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
   }, [isOpen, savedStart, savedEnd, savedTime]);
 
   useLayoutEffect(() => {
-    if (!isOpen || !inputRef.current || typeof window === "undefined") return;
+    if (!isOpen || !inputRef.current || !modalRef.current) return;
 
-    const rect = inputRef.current.getBoundingClientRect();
-    const modalWidth = 700;
+    const raf = requestAnimationFrame(() => {
+      const inputRect = inputRef.current!.getBoundingClientRect();
+      const modalRect = modalRef.current!.getBoundingClientRect();
 
-    const top = rect.bottom + window.scrollY + 4;
-    let left = rect.left + window.scrollX;
+      let top = inputRect.bottom + window.scrollY + 8;
+      let left = inputRect.left + window.scrollX;
 
-    if (left + modalWidth > window.innerWidth + window.scrollX) {
-      left = window.innerWidth + window.scrollX - modalWidth - 10;
-    }
-    if (left < window.scrollX) left = window.scrollX + 10;
+      // kanan
+      if (left + modalRect.width > window.innerWidth) {
+        left = window.innerWidth - modalRect.width - 10;
+      }
 
-    setPosition({ top, left });
+      // kiri
+      if (left < 10) left = 10;
+
+      // bawah → flip ke atas
+      if (top + modalRect.height > window.innerHeight + window.scrollY) {
+        top = inputRect.top + window.scrollY - modalRect.height - 8;
+      }
+
+      // kalau masih kepotong atas → paksa turun
+      if (top < window.scrollY + 10) {
+        top = inputRect.bottom + window.scrollY + 8;
+      }
+
+      setPosition({ top, left });
+    });
 
     const handleOutside = (event: MouseEvent) => {
-      if (
-        modalRef.current?.contains(event.target as Node) ||
-        inputRef.current?.contains(event.target as Node)
-      )
-        return;
+      if (modalRef.current?.contains(event.target as Node) || inputRef.current?.contains(event.target as Node)) return;
       setIsOpen(false);
     };
 
     document.addEventListener("mousedown", handleOutside);
-    return () => document.removeEventListener("mousedown", handleOutside);
+    return () => {
+      cancelAnimationFrame(raf);
+      document.removeEventListener("mousedown", handleOutside);
+    };
   }, [isOpen]);
 
-  const handleCalendarSelect = (ranges : any) => {
+  const handleCalendarSelect = (ranges: any) => {
     const { startDate, endDate } = ranges.selection;
     setTempStart(startDate);
     setTempEnd(mode === "single" ? null : endDate);
@@ -218,18 +200,10 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
     const minutes = String(date.getMinutes()).padStart(2, "0");
     const seconds = String(date.getSeconds()).padStart(2, "0");
 
-    return !isFilter
-      ? `${formatDate({ date, isValue })}${hours}:${minutes}:${seconds}`
-      : formatDate({ date, isValue });
+    return !isFilter ? `${formatDate({ date, isValue })}${hours}:${minutes}:${seconds}` : formatDate({ date, isValue });
   };
 
-  const displayValue = useDisplayValue(
-    isFilter,
-    mode,
-    savedStart,
-    savedEnd,
-    formatDateTime
-  );
+  const displayValue = useDisplayValue(isFilter, mode, savedStart, savedEnd, formatDateTime);
 
   const handleSave = () => {
     setIsOpen(false);
@@ -241,10 +215,7 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
 
     onChange({
       start: formatDateTime(buildValue(tempStart, tempTime), true),
-      end:
-        mode === "range"
-          ? formatDateTime(buildValue(tempEnd, tempTime), true)
-          : null,
+      end: mode === "range" ? formatDateTime(buildValue(tempEnd, tempTime), true) : null,
     });
   };
 
@@ -265,10 +236,7 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
           value={displayValue}
           onClick={() => setIsOpen(true)}
           placeholder={placeholder}
-          className={cn(
-            "w-full border px-3 py-2 rounded-md cursor-pointer truncate overflow-x-hidden",
-            className ? className : ""
-          )}
+          className={cn("w-full border px-3 py-2 rounded-md cursor-pointer truncate overflow-x-hidden", "focus:outline-none focus:ring-1 focus:ring-primary-main focus:border-primary-main", className ?? "")}
         />
 
         <div className="absolute inset-y-0 right-3 flex items-center text-neutral-black">
@@ -290,67 +258,31 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
               <XCircle />
             </button>
           ) : (
-            <div className="pointer-events-none">
-              {icon || <ChevronDown />}
-            </div>
+            <div className="pointer-events-none">{icon || <ChevronDown />}</div>
           )}
         </div>
       </div>
 
       {isOpen &&
         createPortal(
-          <div
-            ref={modalRef}
-            style={{ position: "absolute", ...position, zIndex: 9999 }}
-            className="bg-white rounded-lg p-6 w-max h-max shadow-lg border border-neutral-gray2"
-          >
+          <div ref={modalRef} style={{ position: "absolute", ...position, zIndex: 9999 }} className="bg-white rounded-lg p-6 w-max h-max shadow-lg border border-neutral-gray2">
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-1">
                 {mode === "range" ? (
-                  <DateRange
-                    ranges={[selectionRange]}
-                    onChange={handleCalendarSelect}
-                    moveRangeOnFirstSelection={false}
-                    months={1}
-                    direction="horizontal"
-                    maxDate={isFutureDisabled ? new Date() : undefined}
-                    rangeColors={["#3b82f6"]}
-                  />
+                  <DateRange ranges={[selectionRange]} onChange={handleCalendarSelect} moveRangeOnFirstSelection={false} months={1} direction="horizontal" maxDate={isFutureDisabled ? new Date() : undefined} rangeColors={["#3b82f6"]} />
                 ) : (
-                  <Calendar
-                    date={tempStart || new Date()}
-                    onChange={(d : any) => setTempStart(d)}
-                    maxDate={isFutureDisabled ? new Date() : undefined}
-                  />
+                  <Calendar date={tempStart || new Date()} onChange={(d: any) => setTempStart(d)} maxDate={isFutureDisabled ? new Date() : undefined} />
                 )}
               </div>
 
               {!isFilter && (
                 <div className="flex flex-col items-center justify-center min-w-[150px] py-3">
                   <div className="flex gap-3 text-center h-full py-2">
-                    <TimeColumn
-                      value={tempTime.hours}
-                      onChange={(hours) =>
-                        setTempTime((prev) => ({ ...prev, hours }))
-                      }
-                      range={24}
-                    />
+                    <TimeColumn value={tempTime.hours} onChange={(hours) => setTempTime((prev) => ({ ...prev, hours }))} range={24} />
                     <span className="text-lg font-bold">:</span>
-                    <TimeColumn
-                      value={tempTime.minutes}
-                      onChange={(min) =>
-                        setTempTime((prev) => ({ ...prev, minutes: min }))
-                      }
-                      range={60}
-                    />
+                    <TimeColumn value={tempTime.minutes} onChange={(min) => setTempTime((prev) => ({ ...prev, minutes: min }))} range={60} />
                     <span className="text-lg font-bold">:</span>
-                    <TimeColumn
-                      value={tempTime.seconds}
-                      onChange={(sec) =>
-                        setTempTime((prev) => ({ ...prev, seconds: sec }))
-                      }
-                      range={60}
-                    />
+                    <TimeColumn value={tempTime.seconds} onChange={(sec) => setTempTime((prev) => ({ ...prev, seconds: sec }))} range={60} />
                   </div>
                 </div>
               )}
@@ -358,25 +290,12 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
 
             <div className="flex justify-end mt-2">
               <div className="flex gap-2">
-                <Button
-                  text="Batal"
-                  variant="PLAIN"
-                  size="SMALL"
-                  onClick={() => setIsOpen(false)}
-                  className="min-w-[100px]"
-                />
-                <Button
-                  text="Simpan"
-                  variant="PRIMARY"
-                  size="SMALL"
-                  onClick={handleSave}
-                  disabled={disabledApply}
-                  className="min-w-[100px]"
-                />
+                <Button text="Batal" variant="PLAIN" size="SMALL" onClick={() => setIsOpen(false)} className="min-w-[100px]" />
+                <Button text="Simpan" variant="PRIMARY" size="SMALL" onClick={handleSave} disabled={disabledApply} className="min-w-[100px]" />
               </div>
             </div>
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );

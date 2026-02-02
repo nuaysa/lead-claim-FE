@@ -25,6 +25,22 @@ body {
   font-family:"Plus Jakarta Sans", sans-serif;
 }
 
+.rdp {
+  --rdp-accent-color: #c1123d;       /* primary */
+  --rdp-background-color: #fff5f7;   /* selected bg */
+  --rdp-outline: 2px solid #c1123d;
+}
+
+.rdp-day_range_start,
+.rdp-day_range_end {
+  background-color: #c1123d;
+  color: white;
+}
+
+.rdp-day_range_middle {
+  background-color: #ffe4ea;
+}
+
 @theme {
   --color-neutral-white: #ffffff;
   --color-neutral-black: #333538;

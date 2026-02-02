@@ -1,0 +1,88 @@
+
+.rdrDayInRange .rdrDayNumber span {
+  color: #c1123d !important; 
+}
+
+.rdrDayStartOfRange .rdrDayNumber span,
+.rdrDayEndOfRange .rdrDayNumber span {
+  color: #fff !important;
+}
+.rdrStartEdge,
+.rdrEndEdge {
+  background: #c1123d !important;
+}
+
+
+.rdrInRange {
+  background: #c1123d !important;
+
+}
+
+.rdrDayInRange .rdrDayNumber span {
+  color: #c1123d !important;
+}
+
+.rdrDayHovered {
+  border: 1px solid #c1123d !important;
+}
+
+.rdrDayPassive .rdrDayNumber span {
+  color: #c1123d !important;
+  opacity: 0.5;
+}
+
+.rdrDayStartPreview,
+.rdrDayEndPreview,
+.rdrDayInPreview {
+  background: rgba(193, 18, 61, 0.1) !important; /* Merah transparan */
+  border-color: #c1123d !important;
+  color: #c1123d !important;
+}
+
+.rdrDayToday .rdrDayNumber span:after {
+  background: #c1123d !important;
+}
+
+.rdrNextPrevButton {
+  background: #fde2e8 !important;
+  border-radius: 8px;
+}
+
+.rdrNextPrevButton:hover {
+  background: #c1123d !important;
+}
+
+.rdrNextPrevButton i {
+  border-color: transparent transparent transparent #c1123d !important; /* Panah css */
+}
+
+.rdrNextPrevButton:hover i {
+  border-color: transparent transparent transparent #fff !important;
+}
+
+.rdrPprevButton i {
+  border-color: transparent #c1123d transparent transparent !important;
+}
+
+.rdrPprevButton:hover i {
+  border-color: transparent #fff transparent transparent !important;
+}
+
+.rdrDateDisplayItemActive {
+  border-color: #c1123d !important;
+}
+
+.rdrDateDisplayItemActive input {
+  color: #c1123d !important;
+}
+
+.rdrStaticRangeSelected {
+  color: #c1123d !important;
+  background: #fde2e8 !important;
+}
+
+.rdrStaticRange:hover .rdrStaticRangeLabel,
+.rdrStaticRange:focus .rdrStaticRangeLabel {
+  background: #fde2e8 !important;
+  color: #c1123d !important;
+}
