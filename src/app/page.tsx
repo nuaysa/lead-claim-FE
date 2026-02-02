@@ -17,7 +17,7 @@ export default function Home() {
   }>({});
 
   return (
-    <div className="flex flex-col gap-10 py-5 px-10 bg-neutral-gray4">
+    <div className="flex flex-col gap-8 py-4 px-4 sm:px-6 lg:px-10 bg-neutral-gray4">
       <div className="flex flex-col lg:flex-row w-full gap-2 lg:gap-6">
         <SummaryCard icon={<Database />} title="Total Lead Masuk" value={(vm.leads.length + vm.myLeads.length).toString()} color="primary" />
         <SummaryCard icon={<Flame />} title="Siap Diklaim" value={vm.leads.length.toString()} color="yellow" />
@@ -41,7 +41,7 @@ export default function Home() {
                     key={lead.id}
                     lead={lead}
                     onClaim={() => {
-                      vm.claimLead(lead.id);
+                      vm.claimLead(lead.id, lead.phone);
                       setActiveTab("CLAIMED");
                     }}
                   />
@@ -61,8 +61,7 @@ export default function Home() {
               isFutureDisabled={false}
               isFilter
               placeholder="Choose Date Range"
-              icon={<Calendar 
-              className="text-primary-main "/>}
+              icon={<Calendar className="text-primary-main " />}
               mode="range"
               className="text-primary-main border-primary-hover rounded-xl bg-primary-surface "
               onChange={(value) => {
@@ -134,9 +133,7 @@ function LeadCard({ lead, onClaim }: { lead: any; onClaim?: () => void }) {
         <div className="flex flex-col gap-1 font-bold">
           <h1 className="text-lg text-neutral-black">{lead.name ?? "Unknown Lead"}</h1>
           <span className="flex gap-4 text-xs">
-            <p className="text-neutral-gray1">
-              {lead.phone}
-            </p>
+            <p className="text-neutral-gray1">{lead.phone}</p>
             <p className="text-semantic-red3">{new Date(lead.requestDate).toLocaleTimeString("id-ID")}</p>
           </span>
         </div>

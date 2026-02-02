@@ -42,56 +42,54 @@ export function useDashboardViewModel() {
     }
   };
 
-  const claimLead = async (id: number) => {
-    try {
-      setLoading(true);
-      await claim(id);
-      showToast("Lead berhasil diklaim", "SUCCESS");
+ const claimLead = async (id: number, senderPhone?: string) => {
+  setLoading(true);
 
-      await Promise.all([fetchAllLeads(), fetchMyLeads()]);
-    } catch (error: any) {
-      showToast(error.message, "ERROR");
-    } finally {
-      setLoading(false);
+  try {
+    await claim(id);
+    showToast("Lead berhasil diklaim", "SUCCESS");
+
+    if (senderPhone) {
+      window.open(
+        `https://wa.me/${senderPhone.replace(/^0/, "62")}`,
+        "_blank"
+      );
     }
-  };
+  } catch (error: any) {
+    showToast(error.message, "ERROR");
+    return;
+  } finally {
+    setLoading(false);
+  }
+
+  await Promise.allSettled([
+    fetchAllLeads(),
+    fetchMyLeads(),
+  ]);
+};
 
   const fetchSalesClaim = useCallback(
-  async (params?: getSalesParams) => {
-    try {
-      setLoading(true);
+    async (params?: getSalesParams) => {
+      try {
+        setLoading(true);
 
-      const res = await getSalesClaims(
-        params ?? salesParams
-      );
+        const res = await getSalesClaims(params ?? salesParams);
 
-      const items = res.data ?? [];
+        const items = res.data ?? [];
+        const withPercentage = items.map((s: any) => ({
+          ...s,
+          percentage: s.totalLead === 0 ? 0 : Math.round((s.totalClaimed / s.totalLead) * 100),
+        }));
 
-      const totalClaimed = items.reduce(
-        (sum: number, s: any) => sum + s.totalClaimed,
-        0
-      );
-
-      const withPercentage = items.map((s: any) => ({
-        ...s,
-        percentage:
-          totalClaimed === 0
-            ? 0
-            : Math.round(
-                (s.totalClaimed / totalClaimed) * 100
-              ),
-      }));
-
-      setSalesStats(withPercentage);
-    } catch (error: any) {
-      showToast(error.message, "ERROR");
-    } finally {
-      setLoading(false);
-    }
-  },
-  [salesParams, showToast]
-);
-
+        setSalesStats(withPercentage);
+      } catch (error: any) {
+        showToast(error.message, "ERROR");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [salesParams, showToast],
+  );
 
   const applySalesDateRange = (start?: string, end?: string) => {
     const params: getSalesParams = {};
@@ -110,11 +108,20 @@ export function useDashboardViewModel() {
     fetchSalesClaim();
   }, [salesParams]);
 
+  const refetch = async () => {
+  await Promise.allSettled([
+    fetchAllLeads(),
+    fetchMyLeads(),
+    fetchSalesClaim(),
+  ]);
+};
+
   return {
     leads,
     myLeads,
     salesStats,
     loading,
+    refetch,
 
     fetchAllLeads,
     fetchMyLeads,

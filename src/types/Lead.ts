@@ -1,17 +1,15 @@
 export interface Lead {
   id: number;
-  name: String;
-  phone: String;
-  email?: String;
-  source?: String;
+  name: string;
+  phone: string;
+  email?: string;
+  source?: string;
   status: string;
   requestDate: Date;
 }
-export interface Sales 
-  {
-    id: number,
-    name: String,
-    totalClaimed: number,
-    percentage: number
-  }
-
+export interface Sales {
+  id: number;
+  name: string;
+  totalClaimed: number;
+  percentage: number;
+}
