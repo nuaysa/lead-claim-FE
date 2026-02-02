@@ -14,59 +14,71 @@ export function useDashboardViewModel() {
   const [salesStats, setSalesStats] = useState<Sales[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const PAGE_SIZE = 10;
+
+  const [leadsPage, setLeadsPage] = useState(1);
+  const [myLeadsPage, setMyLeadsPage] = useState(1);
+
+  const [leadsTotalPages, setLeadsTotalPages] = useState(1);
+  const [myLeadsTotalPages, setMyLeadsTotalPages] = useState(1);
+
   const [salesParams, setSalesParams] = useState<getSalesParams>({});
-
-  const fetchAllLeads = async () => {
+  const fetchAllLeads = async (page = 1) => {
     try {
       setLoading(true);
-      const res = await getUnclaimedLeads();
+
+      const res = await getUnclaimedLeads({
+        cursor: page.toString(),
+        limit: PAGE_SIZE,
+      });
+
       setLeads(res.data ?? []);
+      setLeadsPage(page);
+      setLeadsTotalPages(res.totalPages ?? 1);
     } catch (error: any) {
-      setLeads([]);
       showToast(error.message, "ERROR");
     } finally {
       setLoading(false);
     }
   };
-
-  const fetchMyLeads = async () => {
+  const fetchMyLeads = async (page = 1) => {
     try {
       setLoading(true);
-      const res = await getMyLeads();
+
+      const res = await getMyLeads({
+        cursor: page.toString(),
+        limit: PAGE_SIZE,
+      });
+
       setMyLeads(res.data ?? []);
+      setMyLeadsPage(page);
+      setMyLeadsTotalPages(res.totalPages ?? 1);
     } catch (error: any) {
-      setMyLeads([]);
       showToast(error.message, "ERROR");
     } finally {
       setLoading(false);
     }
   };
 
- const claimLead = async (id: number, senderPhone?: string) => {
-  setLoading(true);
+  const claimLead = async (id: number, senderPhone?: string) => {
+    setLoading(true);
 
-  try {
-    await claim(id);
-    showToast("Lead berhasil diklaim", "SUCCESS");
+    try {
+      await claim(id);
+      showToast("Lead berhasil diklaim", "SUCCESS");
 
-    if (senderPhone) {
-      window.open(
-        `https://wa.me/${senderPhone.replace(/^0/, "62")}`,
-        "_blank"
-      );
+      if (senderPhone) {
+        window.open(`https://wa.me/${senderPhone.replace(/^0/, "62")}`, "_blank");
+      }
+    } catch (error: any) {
+      showToast(error.message, "ERROR");
+      return;
+    } finally {
+      setLoading(false);
     }
-  } catch (error: any) {
-    showToast(error.message, "ERROR");
-    return;
-  } finally {
-    setLoading(false);
-  }
 
-  await Promise.allSettled([
-    fetchAllLeads(),
-    fetchMyLeads(),
-  ]);
-};
+    await Promise.allSettled([fetchAllLeads(), fetchMyLeads()]);
+  };
 
   const fetchSalesClaim = useCallback(
     async (params?: getSalesParams) => {
@@ -76,12 +88,8 @@ export function useDashboardViewModel() {
         const res = await getSalesClaims(params ?? salesParams);
 
         const items = res.data ?? [];
-        const withPercentage = items.map((s: any) => ({
-          ...s,
-          percentage: s.totalLead === 0 ? 0 : Math.round((s.totalClaimed / s.totalLead) * 100),
-        }));
 
-        setSalesStats(withPercentage);
+        setSalesStats(items);
       } catch (error: any) {
         showToast(error.message, "ERROR");
       } finally {
@@ -100,8 +108,8 @@ export function useDashboardViewModel() {
     setSalesParams(params);
   };
   useEffect(() => {
-    fetchAllLeads();
-    fetchMyLeads();
+    fetchAllLeads(1);
+    fetchMyLeads(1);
   }, []);
 
   useEffect(() => {
@@ -109,24 +117,24 @@ export function useDashboardViewModel() {
   }, [salesParams]);
 
   const refetch = async () => {
-  await Promise.allSettled([
-    fetchAllLeads(),
-    fetchMyLeads(),
-    fetchSalesClaim(),
-  ]);
-};
+    await Promise.allSettled([fetchAllLeads(), fetchMyLeads(), fetchSalesClaim()]);
+  };
 
   return {
     leads,
     myLeads,
     salesStats,
     loading,
-    refetch,
 
     fetchAllLeads,
     fetchMyLeads,
     claimLead,
 
     applySalesDateRange,
+    refetch,
+    leadsPage,
+    myLeadsPage,
+    leadsTotalPages,
+    myLeadsTotalPages,
   };
 }

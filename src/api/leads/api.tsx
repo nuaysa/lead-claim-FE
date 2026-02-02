@@ -3,8 +3,13 @@ import { axios } from "@/api/index";
 import { getSalesParams } from "../types/types";
 import { createURLParams } from "@/utils/helpers";
 
-export function getMyLeads() {
-  return apiResolver(() => axios.get("leads/myLeads"), {
+export function getMyLeads(params?: { cursor?: string; limit?: number }) {
+  const queryParams = createURLParams({
+    cursor: params?.cursor,
+    limit: params?.limit ?? 20,
+  });
+
+  return apiResolver(() => axios.get(`leads/myLeads${queryParams}`), {
     throwErrorObject: true,
   });
 }
@@ -22,8 +27,16 @@ export function getSalesClaims(params: getSalesParams) {
   });
 }
 
-export function getUnclaimedLeads() {
-  return apiResolver(() => axios.get("leads/"), {
+export function getUnclaimedLeads(params?: {
+  cursor?: string;
+  limit?: number;
+}) {
+  const queryParams = createURLParams({
+    cursor: params?.cursor,
+    limit: params?.limit ?? 20,
+  });
+
+  return apiResolver(() => axios.get(`leads/${queryParams}`), {
     throwErrorObject: true,
   });
 }

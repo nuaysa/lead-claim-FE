@@ -47,10 +47,33 @@ export default function Home() {
                   />
                 ))
               )}
+
+              <div className="flex justify-center items-center gap-3 mt-4">
+                <Button text="Prev" variant="OUTLINE" disabled={vm.leadsPage === 1} onClick={() => vm.fetchAllLeads(vm.leadsPage - 1)} />
+
+                <span className="text-sm font-bold text-primary-hover">
+                  Page {vm.leadsPage} / {vm.leadsTotalPages}
+                </span>
+
+                <Button text="Next" variant="OUTLINE" disabled={vm.leadsPage >= vm.leadsTotalPages} onClick={() => vm.fetchAllLeads(vm.leadsPage + 1)} />
+              </div>
             </>
           )}
 
-          {activeTab === "CLAIMED" && <>{vm.myLeads.length === 0 ? <EmptyState title="Belum ada customer" description="Kamu belum mengklaim customer." /> : vm.myLeads.map((lead) => <LeadCard key={lead.id} lead={lead} />)}</>}
+          {activeTab === "CLAIMED" && (
+            <>
+              {vm.myLeads.length === 0 ? <EmptyState title="Belum ada customer" description="Kamu belum mengklaim customer." /> : vm.myLeads.map((lead) => <LeadCard key={lead.id} lead={lead} />)}
+              <div className="flex justify-center items-center gap-3 mt-4">
+                <Button text="Prev" variant="OUTLINE" disabled={vm.myLeadsPage === 1} onClick={() => vm.fetchMyLeads(vm.myLeadsPage - 1)} />
+
+                <span className="text-sm font-bold text-primary-hover">
+                  Page {vm.myLeadsPage} / {vm.myLeadsTotalPages}
+                </span>
+
+                <Button text="Next" variant="OUTLINE" disabled={vm.myLeadsPage >= vm.myLeadsTotalPages} onClick={() => vm.fetchMyLeads(vm.myLeadsPage + 1)} />
+              </div>
+            </>
+          )}
         </div>
 
         <div className="flex flex-col w-full lg:w-1/3 gap-4 mt-4">
