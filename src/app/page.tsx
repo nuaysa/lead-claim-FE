@@ -66,7 +66,7 @@ export default function Home() {
               <div className="flex justify-center items-center gap-3 mt-4">
                 <Button text="Prev" variant="OUTLINE" disabled={vm.leadsPage === 1} onClick={() => vm.fetchAllLeads(vm.leadsPage - 1)} />
 
-                <span className="text-sm font-bold text-">
+                <span className="text-sm font-bold text-primary-hover">
                   Page {vm.leadsPage} / {vm.leadsTotalPages}
                 </span>
 
@@ -81,7 +81,7 @@ export default function Home() {
               <div className="flex justify-center items-center gap-3 mt-4">
                 <Button text="Prev" variant="OUTLINE" disabled={vm.myLeadsPage === 1} onClick={() => vm.fetchMyLeads(vm.myLeadsPage - 1)} />
 
-                <span className="text-sm font-bold text-">
+                <span className="text-sm font-bold text-primary-hover">
                   Page {vm.myLeadsPage} / {vm.myLeadsTotalPages}
                 </span>
 
