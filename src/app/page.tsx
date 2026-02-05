@@ -89,7 +89,7 @@ export default function Home() {
                 <Button text="Prev" variant="OUTLINE" disabled={vm.myLeadsPage === 1} onClick={() => vm.fetchMyLeads(vm.myLeadsPage - 1)} />
 
                 <span className="text-sm font-bold text-primary-hover">
-                  Page {vm.leads.length === 0 ? 0 : vm.myLeadsPage} / {vm.myLeadsTotalPages}
+                  Page {vm.myLeads.length === 0 ? 0 : vm.myLeadsPage} / {vm.myLeadsTotalPages}
                 </span>
 
                 <Button text="Next" variant="OUTLINE" disabled={vm.myLeadsPage >= vm.myLeadsTotalPages} onClick={() => vm.fetchMyLeads(vm.myLeadsPage + 1)} />
