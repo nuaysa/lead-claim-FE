@@ -1,7 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
-import { useAuthContext } from "@/contexts/AuthContext";
 import { Field } from "@/components/Common/Form/Form";
 import { useToast } from "@/contexts/ToastContext";
 import { resetPassword } from "@/api/auth";
@@ -46,6 +45,7 @@ export function useResetPasswordViewModel() {
       name: "confirmPassword",
       label: "Confirm Password",
       type: "password",
+      customWidth: "w-full",
       placeholder: "Masukkan lagi passwordmu",
     },
   ];

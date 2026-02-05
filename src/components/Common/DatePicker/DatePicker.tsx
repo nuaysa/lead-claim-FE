@@ -265,7 +265,7 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
 
       {isOpen &&
         createPortal(
-          <div ref={modalRef} style={{ position: "absolute", ...position, zIndex: 9999 }} className="bg-white rounded-lg p-6 w-max h-max shadow-lg border border-neutral-gray2">
+          <div ref={modalRef} style={{ position: "fixed", ...position, zIndex: 9999 }} className="bg-white rounded-lg p-6 w-max h-max shadow-lg border border-neutral-gray2">
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-1">
                 {mode === "range" ? (

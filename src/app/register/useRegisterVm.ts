@@ -1,3 +1,4 @@
+"use client"
 import { yupResolver } from "@hookform/resolvers/yup";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -5,7 +6,7 @@ import { register } from "@/api/auth";
 import { Field } from "@/components/Common/Form/Form";
 import { useToast } from "@/contexts/ToastContext";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export const registerSchema = yup.object({
   email: yup.string().required("* Email wajib diisi"),
