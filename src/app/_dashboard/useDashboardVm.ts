@@ -61,34 +61,33 @@ export function useDashboardViewModel() {
       setLoading(false);
     }
   };
+const claimLead = async (id: number, senderPhone?: string) => {
+  if (!senderPhone) return;
 
-  const claimLead = async (id: number, senderPhone?: string) => {
-    if (!senderPhone) return;
+  setLoading(true);
 
-    setLoading(true);
+  try {
+    const res = await claim(id);
 
-    try {
-      const res = await claim(id);
-    
-      if (res?.status === 200) {
-        showToast("Lead berhasil diklaim", "SUCCESS");
+    if (res?.status === 201) {
+      showToast(res.message ?? "Lead berhasil diklaim", "SUCCESS");
 
-        const waUrl = `https://wa.me/${senderPhone.replace(/^0/, "62")}`;
-
-        const opened = window.open(waUrl, "_blank", "noopener,noreferrer");
-
-        if (!opened) {
-          showToast("Lead berhasil diklaim, tapi WhatsApp tidak bisa dibuka otomatis", "INFO");
-        }
-      }
-    } catch (error: any) {
-      showToast(error?.response?.data?.message ?? "Lead sudah diklaim oleh sales lain", "ERROR");
-      return;
-    } finally {
-      Promise.allSettled([fetchAllLeads(), fetchMyLeads()]);
-      setLoading(false);
+      const waUrl = `https://wa.me/${senderPhone.replace(/^0/, "62")}`;
+      window.open(waUrl, "_blank", "noopener,noreferrer");
     }
-  };
+  } catch (error: any) {
+    showToast(
+      error?.message ??
+        "Lead sudah diklaim oleh sales lain",
+      "ERROR"
+    );
+    return;
+  } finally {
+    await Promise.allSettled([fetchAllLeads(), fetchMyLeads()]);
+    setLoading(false);
+  }
+};
+
 
   const deleteUserfunc = async (id: string) => {
     setLoading(true);
