@@ -1,30 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { useAuthContext } from "@/contexts/AuthContext";
 import Button from "@/components/Common/Button/Button";
 import DynamicForm from "@/components/Common/Form/Form";
 import { useResetPasswordViewModel } from "./useResetPasswordVm";
 
 export default function LoginPage() {
-  const { isAuthenticated, isLoading } = useAuthContext();
-  const router = useRouter();
   const { form, ResetPasswordFields, onSubmit } = useResetPasswordViewModel();
 
-  useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      router.replace("/");
-    }
-  }, [isAuthenticated, isLoading, router]);
-
-  // if (isLoading || isAuthenticated) {
-  //   return (
-  //     <div className="fixed inset-0 flex justify-center items-center bg-white">
-  //       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="flex flex-col px-7 h-screen items-center justify-center bg-linear-to-br from-primary-surface to-white z-50">
