@@ -12,7 +12,7 @@ export default function AuthLoading() {
       </div>
       <div className="mt-8 text-center">
         <h2 className="text-xl font-semibold text-primary-main mb-2">
-      LeadClaim. </h2>
+      Powersurya CRM </h2>
         <p className="text-neutral-gray1 animate-pulse">Memuat sistem...</p>
       </div>
     </div>

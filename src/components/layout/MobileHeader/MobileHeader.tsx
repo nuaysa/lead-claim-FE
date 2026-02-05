@@ -45,7 +45,7 @@ export default function MobileHeader() {
           <div className="relative w-8 h-8">
             <ZapIcon color="white" className="bg-linear-to-r from-primary-main to-primary-hover shadow-2xs h-10 w-10 p-2 rounded-xl" size={25} />
           </div>
-          <p className="text-sm font-bold text-black">LeadClaim.</p>
+          <p className="text-sm font-bold text-black">Powersurya CRM</p>
         </Link>
 
         <div className="flex items-center gap-3">
@@ -113,7 +113,7 @@ export default function MobileHeader() {
 
           <div className="mt-8 pt-4 items-end border-t border-neutral-gray2 text-center">
             <p className="text-xs text-primary-main">
-              Developed by <Link href={"https://aysa.bim.web.id/"}> A </Link> • LeadClaim.
+              Developed by <Link href={"https://aysa.bim.web.id/"}> A </Link> • Powersurya CRM
             </p>
           </div>
         </div>

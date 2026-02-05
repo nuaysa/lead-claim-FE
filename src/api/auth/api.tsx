@@ -24,9 +24,3 @@ export function getProfile() {
     throwErrorObject: true,
   });
 }
-
-export function verifyUser(token: string) {
-  return apiResolver(() => axios.patch(`auth/verify/${token}`), {
-    throwErrorObject: true,
-  });
-}

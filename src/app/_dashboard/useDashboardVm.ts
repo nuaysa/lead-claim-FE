@@ -8,7 +8,6 @@ import { getSalesParams } from "@/api/types/types";
 
 export function useDashboardViewModel() {
   const { showToast } = useToast();
-
   const [leads, setLeads] = useState<Lead[]>([]);
   const [myLeads, setMyLeads] = useState<Lead[]>([]);
   const [salesStats, setSalesStats] = useState<Sales[]>([]);
@@ -66,13 +65,14 @@ export function useDashboardViewModel() {
     try {
       await claim(id);
       showToast("Lead berhasil diklaim", "SUCCESS");
+     
+      if (!senderPhone) return;
 
-      if (senderPhone) {
-        window.open(`https://wa.me/${senderPhone.replace(/^0/, "62")}`, "_blank");
-      }
+      const waUrl = `https://wa.me/${senderPhone.replace(/^0/, "62")}`;
+
+      window.open(waUrl, "_blank");
     } catch (error: any) {
       showToast(error.message, "ERROR");
-      return;
     } finally {
       setLoading(false);
     }

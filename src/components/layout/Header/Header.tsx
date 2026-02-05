@@ -12,7 +12,7 @@ export default function Header() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { userProfile, logout } = useAuthContext();
-  
+
   const profile = userProfile?.name.toUpperCase().charAt(0);
   const userRole = userProfile?.role;
 
@@ -31,7 +31,7 @@ export default function Header() {
       <div className="flex items-center gap-6">
         <Link href="/" className="flex cursor-pointer items-center mx-4 text-white">
           <ZapIcon color="white" className="bg-linear-to-r from-primary-main to-primary-hover shadow-2xs h-10 w-10 p-2 rounded-xl" size={25} />
-          <p className="text-lg text-neutral-black font-bold leading-tight mx-3">LeadClaim.</p>
+          <p className="text-lg text-neutral-black font-bold leading-tight mx-3">Powersurya CRM</p>
         </Link>
       </div>
 
