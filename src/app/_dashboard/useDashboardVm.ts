@@ -62,27 +62,27 @@ export function useDashboardViewModel() {
     }
   };
 
-  const claimLead = async (id: number, senderPhone?: string) => {
-    setLoading(true);
+const claimLead = async (id: number, senderPhone?: string) => {
+  if (!senderPhone) return;
 
-    try {
-      await claim(id);
+  const waUrl = `https://wa.me/${senderPhone.replace(/^0/, "62")}`;
 
-      showToast("Lead berhasil diklaim", "SUCCESS");
+  window.open(waUrl, "_blank");
 
-      if (!senderPhone) return;
+  setLoading(true);
 
-      const waUrl = `https://wa.me/${senderPhone.replace(/^0/, "62")}`;
+  try {
+    await claim(id);
+    showToast("Lead berhasil diklaim", "SUCCESS");
+  } catch (error: any) {
+    showToast(error.message, "ERROR");
+  } finally {
+    setLoading(false);
+  }
 
-      window.open(waUrl, "_blank");
-    } catch (error: any) {
-      showToast(error.message, "ERROR");
-    } finally {
-      setLoading(false);
-    }
+  await Promise.allSettled([fetchAllLeads(), fetchMyLeads()]);
+};
 
-    await Promise.allSettled([fetchAllLeads(), fetchMyLeads()]);
-  };
 
   const deleteUserfunc = async (id: string) => {
     setLoading(true);
