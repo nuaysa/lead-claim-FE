@@ -76,13 +76,13 @@ export default function ConfirmationModal({ isOpen, onClose, variant = "warning"
 
   return (
     <div className="fixed inset-0 bg-neutral-black/30 flex items-center justify-center z-30 p-4">
-      <div ref={modalRef} className="relative bg-neutral-white rounded-lg w-1/4 mx-auto flex flex-col justify-center items-center text-center px-6 py-8">
+      <div ref={modalRef} className="relative bg-neutral-white rounded-lg w-1/2 mx-auto flex flex-col justify-center items-center px-6 py-8">
         <button type="button" onClick={onClose} className="absolute right-3 top-3 text-neutral-black cursor-pointer">
           <X width={24} height={24} />
         </button>
-        <span className="flex justify-center w-full">{currentVariant.icon}</span>
-        <h2 className="text-xl font-bold text-neutral-black mb-3">{title}</h2>
-        <p className="text-neutral-black mb-6 text-sm">{description}</p>
+        <span className="w-full">{currentVariant.icon}</span>
+        <h2 className="text-xl font-bold text-neutral-black mb-1">{title}</h2>
+        <p className="text-neutral-black mb-4 text-sm">{description}</p>
 
         {children && <div className="mb-6">{children}</div>}
 
