@@ -77,7 +77,7 @@ export function useregisterViewModel() {
       if (res?.status === 201) {
         setTimeout(() => {}, 100);
 
-        showToast("pendaftaran akun Sukses", "SUCCESS");
+        showToast(res.message ?? "pendaftaran akun Sukses", "SUCCESS");
         router.push("/");
       }
     } catch (error: any) {

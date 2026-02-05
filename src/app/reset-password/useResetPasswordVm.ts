@@ -59,7 +59,7 @@ export function useResetPasswordViewModel() {
       if (res?.status === 200) {
         setTimeout(() => {}, 100);
 
-        showToast("Reset Password Sukses", "SUCCESS");
+        showToast(res.message ?? "Reset Password Sukses", "SUCCESS");
         router.push("/");
       }
     } catch (error: any) {

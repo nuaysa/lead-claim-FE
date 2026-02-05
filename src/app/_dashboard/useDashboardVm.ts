@@ -93,9 +93,9 @@ const claimLead = async (id: number, senderPhone?: string) => {
     setLoading(true);
 
     try {
-      await deleteUser(id);
+      const res = await deleteUser(id);
 
-      showToast("User berhasil dihapus", "SUCCESS");
+     showToast(res.message ?? "User berhasil dihapus", "SUCCESS");
     } catch (error: any) {
       showToast(error.message, "ERROR");
     } finally {

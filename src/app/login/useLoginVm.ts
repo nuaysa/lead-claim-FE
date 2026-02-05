@@ -58,7 +58,7 @@ export function useLoginViewModel() {
 
         setTimeout(() => {}, 100);
 
-        showToast("Login Sukses", "SUCCESS");
+        showToast( res.message ?? "Login Sukses", "SUCCESS");
       }
     } catch (error : any) {
       showToast(error.message, "ERROR");
