@@ -1,6 +1,6 @@
 import apiResolver from "@/api/apiResolver";
 import { axios, axiosNoAuth } from "@/api/index";
-import type { LoginParams, RegisterParams, ResetPassParams} from "../types/types";
+import type { LoginParams, RegisterParams, ResetPassParams } from "../types/types";
 
 export function login(param: LoginParams) {
   return apiResolver(() => axiosNoAuth.post("auth/login", param), {
@@ -15,7 +15,13 @@ export function register(param: RegisterParams) {
 }
 
 export function resetPassword(param: ResetPassParams) {
-  return apiResolver(() => axios.post("auth/reset-password", param), {
+  return apiResolver(() => axios.patch("auth/reset-password", param), {
+    throwErrorObject: true,
+  });
+}
+
+export function deleteUser( id: string ) {
+  return apiResolver(() => axios.delete(`auth/delete/${id}`), {
     throwErrorObject: true,
   });
 }

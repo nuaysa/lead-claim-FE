@@ -64,6 +64,7 @@ export function useDashboardViewModel() {
 
     try {
       await claim(id);
+      
       showToast("Lead berhasil diklaim", "SUCCESS");
      
       if (!senderPhone) return;
