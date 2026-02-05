@@ -79,7 +79,7 @@ export function useregisterViewModel() {
         setTimeout(() => {}, 100);
         afterSuccessLogin(res.token);
 
-        showToast("pendaftaran akun Sukses, silahkan cek inbox email yang didaftarkan", "SUCCESS");
+        showToast("pendaftaran akun Sukses", "SUCCESS");
         router.push("/");
       }
     } catch (error: any) {
