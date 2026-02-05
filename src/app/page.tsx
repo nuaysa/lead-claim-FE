@@ -215,7 +215,7 @@ function UserCard({ user, onDelete }: { user: any; onDelete?: () => void }) {
         </div>
       </span>
 
-      {onDelete && <Button icon={<Trash2/>} variant="DANGER" className="w-30" onClick={onDelete} />}
+      {onDelete && <Button icon={<Trash2/>} size="ICON" variant="DANGER" className="w-30" onClick={onDelete} />}
     </Card>
   );
 }
