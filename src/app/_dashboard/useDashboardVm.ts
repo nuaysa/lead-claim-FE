@@ -65,25 +65,39 @@ export function useDashboardViewModel() {
 const claimLead = async (id: number, senderPhone?: string) => {
   if (!senderPhone) return;
 
-  const waUrl = `https://wa.me/${senderPhone.replace(/^0/, "62")}`;
-
-  window.open(waUrl, "_blank");
-
   setLoading(true);
 
+  let isClaimSuccess = false;
+
   try {
-    await claim(id);
+    await claim(id); 
+    isClaimSuccess = true;
     showToast("Lead berhasil diklaim", "SUCCESS");
   } catch (error: any) {
-    showToast(error?.message || "Error Exception API", "ERROR");
+    showToast(
+      error?.response?.data?.message ?? "Lead sudah diklaim oleh sales lain",
+      "ERROR"
+    );
+    return; 
   } finally {
     setLoading(false);
   }
 
+  if (isClaimSuccess) {
+    const waUrl = `https://wa.me/${senderPhone.replace(/^0/, "62")}`;
+
+    const opened = window.open(waUrl, "_blank", "noopener,noreferrer");
+
+    if (!opened) {
+      showToast(
+        "Lead berhasil diklaim, tapi WhatsApp tidak bisa dibuka otomatis",
+        "INFO"
+      );
+    }
+  }
+
   await Promise.allSettled([fetchAllLeads(), fetchMyLeads()]);
 };
-
-
 
   const deleteUserfunc = async (id: string) => {
     setLoading(true);
