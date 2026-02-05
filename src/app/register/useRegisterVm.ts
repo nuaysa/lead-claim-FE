@@ -5,7 +5,6 @@ import * as yup from "yup";
 import { register } from "@/api/auth";
 import { Field } from "@/components/Common/Form/Form";
 import { useToast } from "@/contexts/ToastContext";
-import { useAuthContext } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 
 export const registerSchema = yup.object({
@@ -33,7 +32,6 @@ export const useregisterForm = () => {
 
 export function useregisterViewModel() {
   const { showToast } = useToast();
-  const { afterSuccessLogin } = useAuthContext();
   const router = useRouter();
 
   const form = useregisterForm();
@@ -78,7 +76,6 @@ export function useregisterViewModel() {
       const res = await register({ email: data.email, name: data.name, password: data.password, role: data.role });
       if (res?.status === 201) {
         setTimeout(() => {}, 100);
-        afterSuccessLogin(res.token);
 
         showToast("pendaftaran akun Sukses", "SUCCESS");
         router.push("/");
