@@ -76,7 +76,7 @@ export function useregisterViewModel() {
   const onSubmit: SubmitHandler<registerFormValues> = async (data) => {
     try {
       const res = await register({ email: data.email, name: data.name, password: data.password, role: data.role });
-      if (res?.status === 200) {
+      if (res?.status === 201) {
         setTimeout(() => {}, 100);
         afterSuccessLogin(res.token);
 
