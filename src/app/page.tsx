@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Button from "@/components/Common/Button/Button";
 import Card from "@/components/Common/Card";
-import { Calendar, CheckCircle, Database, Flame, InfoIcon, RefreshCcw, User2 } from "lucide-react";
+import { Calendar, CheckCircle, Database, Flame, InfoIcon, RefreshCcw, Trash2, User2 } from "lucide-react";
 import { useDashboardViewModel } from "./_dashboard/useDashboardVm";
 import CustomDatePicker from "@/components/Common/DatePicker";
 import { EmptyState } from "@/components/Common/EmptyState";
@@ -98,7 +98,11 @@ export default function Home() {
 
           {userRole === "ADMIN" && activeTab === "USERS" && (
             <>
-              {vm.salesStats.length === 0 ? <EmptyState title="Belum ada user" description="User belum tersedia, silahkan tambah user melalui menu pada profile." /> : vm.salesStats.map((user) => <UserCard key={user.id} user={user} onDelete={() => vm.deleteUserfunc(user.id.toString())}/>)}
+              {vm.salesStats.length === 0 ? (
+                <EmptyState title="Belum ada user" description="User belum tersedia, silahkan tambah user melalui menu pada profile." />
+              ) : (
+                vm.salesStats.map((user) => <UserCard key={user.id} user={user} onDelete={() => vm.deleteUserfunc(user.id.toString())} />)
+              )}
               <div className="flex justify-center items-center gap-3 mt-4"></div>
             </>
           )}
@@ -206,12 +210,12 @@ function UserCard({ user, onDelete }: { user: any; onDelete?: () => void }) {
         <div className="flex flex-col gap-1 font-bold">
           <h1 className="text-lg text-neutral-black">{user.name ?? "Unknown user"}</h1>
           <span className="flex gap-4 text-xs">
-            <p className="text-neutral-gray1">{user.phone} || {user.email}</p>
+            <p className="text-neutral-gray1">{user.email}</p>
           </span>
         </div>
       </span>
 
-      {onDelete && <Button text="HAPUS" variant="DANGER" className="w-30" onClick={onDelete} />}
+      {onDelete && <Button icon={<Trash2/>} variant="DANGER" className="w-30" onClick={onDelete} />}
     </Card>
   );
 }

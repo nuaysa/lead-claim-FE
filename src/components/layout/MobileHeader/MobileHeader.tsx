@@ -46,11 +46,11 @@ export default function MobileHeader() {
   return (
     <header className="sticky top-0 w-full bg-white border-b border-neutral-gray2 z-50">
       <div className="flex items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="relative w-8 h-8">
+        <Link href="/" className="flex items-center gap-3">
+          <div className="relative">
             <ZapIcon color="white" className="bg-linear-to-r from-primary-main to-primary-hover shadow-2xs h-10 w-10 p-2 rounded-xl" size={25} />
           </div>
-          <p className="text-sm font-bold text-black">Powersurya CRM</p>
+          <p className="text-lg font-bold text-black">Powersurya CRM</p>
         </Link>
 
         <div className="flex items-center gap-3">

@@ -252,9 +252,9 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
         )}
       </div>
 
-      <div className="flex justify-end mt-4 gap-2">
-        <Button text="Batal" variant="PLAIN" size="SMALL" onClick={() => setIsOpen(false)} />
-        <Button text="Simpan" variant="PRIMARY" size="SMALL" onClick={handleSave} disabled={disabledApply} />
+      <div className="flex justify-center w-full mt-4 gap-2">
+        <Button text="Batal" className="w-1/2" variant="PLAIN" size="SMALL" onClick={() => setIsOpen(false)} />
+        <Button text="Simpan" className="w-1/2" variant="PRIMARY" size="SMALL" onClick={handleSave} disabled={disabledApply} />
       </div>
     </>
   );
