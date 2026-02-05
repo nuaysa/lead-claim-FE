@@ -219,8 +219,8 @@ function LeadCard({ lead, onClaim }: { lead: Lead; onClaim?: () => void }) {
               </span>
             </div>
           </span>
-          <span className="flex gap-3 justify-center items-center">
-            <Button size="ICON" variant="OUTLINE" icon={<InfoIcon />} onClick={() => isOpen === false ? setIsOpen(true) : setIsOpen(false)} />
+          <span className="flex justify-center items-center">
+            <Button size="ICON" variant="OUTLINE" icon={<InfoIcon />} className="mr-3" onClick={() => isOpen === false ? setIsOpen(true) : setIsOpen(false)} />
             {onClaim && <Button text="KLAIM" variant="BLACK" className="max-w-30" onClick={onClaim} />}
           </span>
         </div>
