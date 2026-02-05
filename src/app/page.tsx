@@ -203,7 +203,7 @@ function TabButton({ active, label, onClick }: { active: boolean; label: string;
 function LeadCard({ lead, onClaim }: { lead: Lead; onClaim?: () => void }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
-    <Card className="w-full hover:border hover:border-primary-red px-5 rounded-3xl">
+    <Card className="w-full hover:border hover:border-primary-red px-2 md:px-5 rounded-3xl">
       <div className="flex flex-col gap-4">
         <div className=" flex  items-center justify-between">
           <span className="flex gap-5 justify-between items-center">
@@ -221,7 +221,7 @@ function LeadCard({ lead, onClaim }: { lead: Lead; onClaim?: () => void }) {
           </span>
           <span className="flex gap-3 justify-center items-center">
             <Button size="ICON" variant="OUTLINE" icon={<InfoIcon />} onClick={() => isOpen === false ? setIsOpen(true) : setIsOpen(false)} />
-            {onClaim && <Button text="KLAIM" variant="BLACK" className="w-30" onClick={onClaim} />}
+            {onClaim && <Button text="KLAIM" variant="BLACK" className="max-w-30" onClick={onClaim} />}
           </span>
         </div>
         {isOpen && (
