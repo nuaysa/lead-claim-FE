@@ -4,7 +4,7 @@ import Button from "@/components/Common/Button/Button";
 import DynamicForm from "@/components/Common/Form/Form";
 import { useResetPasswordViewModel } from "./useResetPasswordVm";
 
-export default function LoginPage() {
+export default function ResetPasswordPage() {
   const { form, ResetPasswordFields, onSubmit } = useResetPasswordViewModel();
 
 
