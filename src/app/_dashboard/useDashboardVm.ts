@@ -5,6 +5,7 @@ import { claim, getUnclaimedLeads, getMyLeads, getSalesClaims } from "@/api/lead
 import { useToast } from "@/contexts/ToastContext";
 import { Lead, Sales } from "@/types/Lead";
 import { getSalesParams } from "@/api/types/types";
+import { deleteUser } from "@/api/auth";
 
 export function useDashboardViewModel() {
   const { showToast } = useToast();
@@ -81,6 +82,23 @@ export function useDashboardViewModel() {
     await Promise.allSettled([fetchAllLeads(), fetchMyLeads()]);
   };
 
+  const deleteUserfunc = async (id: string) => {
+    setLoading(true);
+
+    try {
+      await deleteUser(id);
+      
+      showToast("User berhasil dihapus", "SUCCESS");
+  
+    } catch (error: any) {
+      showToast(error.message, "ERROR");
+    } finally {
+      setLoading(false);
+    }
+
+    await Promise.allSettled([fetchAllLeads(), fetchMyLeads()]);
+  };
+
   const fetchSalesClaim = useCallback(
     async (params?: getSalesParams) => {
       try {
@@ -130,7 +148,7 @@ export function useDashboardViewModel() {
     fetchAllLeads,
     fetchMyLeads,
     claimLead,
-
+    deleteUserfunc,
     applySalesDateRange,
     refetch,
     leadsPage,

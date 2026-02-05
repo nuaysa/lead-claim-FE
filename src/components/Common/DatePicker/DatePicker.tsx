@@ -9,6 +9,7 @@ import Button from "../Button/Button";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import "@/styles/react-date-range.override.css";
+import { useIsMobile } from "@/components/hooks/useIsMobile";
 
 interface CustomDatePickerProps {
   placeholder: string;
@@ -136,6 +137,8 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const isMobile = useIsMobile();
+
   useEffect(() => {
     if (isOpen) {
       setTempStart(savedStart);
@@ -145,38 +148,36 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
   }, [isOpen, savedStart, savedEnd, savedTime]);
 
   useLayoutEffect(() => {
-    if (!isOpen || !inputRef.current || !modalRef.current) return;
+    if (!isOpen || isMobile || !inputRef.current || !modalRef.current) return;
 
     const raf = requestAnimationFrame(() => {
       const inputRect = inputRef.current!.getBoundingClientRect();
       const modalRect = modalRef.current!.getBoundingClientRect();
 
       let top = inputRect.bottom + 8;
-      let left = inputRect.left;
+      let left = inputRect.left + inputRect.width / 2 - modalRect.width / 2;
 
-      // kanan
+      // clamp horizontal
+      if (left < 10) left = 10;
       if (left + modalRect.width > window.innerWidth) {
         left = window.innerWidth - modalRect.width - 10;
       }
 
-      // kiri
-      if (left < 10) left = 10;
-
-      // bawah → flip ke atas
+      // flip vertical
       if (top + modalRect.height > window.innerHeight) {
         top = inputRect.top - modalRect.height - 8;
       }
 
-      // kalau masih kepotong atas → paksa turun
-      if (top < window.scrollY + 10) {
-        top = inputRect.bottom + window.scrollY + 8;
+      // fallback
+      if (top < 10) {
+        top = inputRect.bottom + 8;
       }
 
       setPosition({ top, left });
     });
 
-    const handleOutside = (event: MouseEvent) => {
-      if (modalRef.current?.contains(event.target as Node) || inputRef.current?.contains(event.target as Node)) return;
+    const handleOutside = (e: MouseEvent) => {
+      if (modalRef.current?.contains(e.target as Node) || inputRef.current?.contains(e.target as Node)) return;
       setIsOpen(false);
     };
 
@@ -185,7 +186,7 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
       cancelAnimationFrame(raf);
       document.removeEventListener("mousedown", handleOutside);
     };
-  }, [isOpen]);
+  }, [isOpen, isMobile]);
 
   const handleCalendarSelect = (ranges: any) => {
     const { startDate, endDate } = ranges.selection;
@@ -227,6 +228,37 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
 
   const disabledApply = mode === "range" ? !tempStart || !tempEnd : !tempStart;
 
+  const CalendarContent = (
+    <>
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex-1">
+          {mode === "range" ? (
+            <DateRange ranges={[selectionRange]} onChange={handleCalendarSelect} moveRangeOnFirstSelection={false} months={1} direction="vertical" maxDate={isFutureDisabled ? new Date() : undefined} />
+          ) : (
+            <Calendar date={tempStart || new Date()} onChange={(d: any) => setTempStart(d)} maxDate={isFutureDisabled ? new Date() : undefined} />
+          )}
+        </div>
+
+        {!isFilter && !isMobile && (
+          <div className="flex flex-col items-center justify-center min-w-[150px] py-3">
+            <div className="flex gap-3 text-center h-full py-2">
+              <TimeColumn value={tempTime.hours} onChange={(hours) => setTempTime((prev) => ({ ...prev, hours }))} range={24} />
+              <span className="text-lg font-bold">:</span>
+              <TimeColumn value={tempTime.minutes} onChange={(min) => setTempTime((prev) => ({ ...prev, minutes: min }))} range={60} />
+              <span className="text-lg font-bold">:</span>
+              <TimeColumn value={tempTime.seconds} onChange={(sec) => setTempTime((prev) => ({ ...prev, seconds: sec }))} range={60} />
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="flex justify-end mt-4 gap-2">
+        <Button text="Batal" variant="PLAIN" size="SMALL" onClick={() => setIsOpen(false)} />
+        <Button text="Simpan" variant="PRIMARY" size="SMALL" onClick={handleSave} disabled={disabledApply} />
+      </div>
+    </>
+  );
+
   return (
     <>
       <div className="relative">
@@ -262,39 +294,17 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
           )}
         </div>
       </div>
-
       {isOpen &&
         createPortal(
-          <div ref={modalRef} style={{ position: "fixed", ...position, zIndex: 9999 }} className="bg-white rounded-lg p-6 max-w-[95vw] h-max shadow-lg border border-neutral-gray2">
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="flex-1">
-                {mode === "range" ? (
-                  <DateRange ranges={[selectionRange]} onChange={handleCalendarSelect} moveRangeOnFirstSelection={false} months={1} direction="horizontal" maxDate={isFutureDisabled ? new Date() : undefined} rangeColors={["#3b82f6"]} />
-                ) : (
-                  <Calendar date={tempStart || new Date()} onChange={(d: any) => setTempStart(d)} maxDate={isFutureDisabled ? new Date() : undefined} />
-                )}
-              </div>
-
-              {!isFilter && (
-                <div className="flex flex-col items-center justify-center min-w-[150px] py-3">
-                  <div className="flex gap-3 text-center h-full py-2">
-                    <TimeColumn value={tempTime.hours} onChange={(hours) => setTempTime((prev) => ({ ...prev, hours }))} range={24} />
-                    <span className="text-lg font-bold">:</span>
-                    <TimeColumn value={tempTime.minutes} onChange={(min) => setTempTime((prev) => ({ ...prev, minutes: min }))} range={60} />
-                    <span className="text-lg font-bold">:</span>
-                    <TimeColumn value={tempTime.seconds} onChange={(sec) => setTempTime((prev) => ({ ...prev, seconds: sec }))} range={60} />
-                  </div>
-                </div>
-              )}
+          isMobile ? (
+            <div className="fixed inset-0 z-[9999] bg-black/40 flex items-end">
+              <div className="w-full bg-white rounded-t-2xl p-4 max-h-[90vh] overflow-y-auto">{CalendarContent}</div>
             </div>
-
-            <div className="flex justify-end mt-2">
-              <div className="flex gap-2">
-                <Button text="Batal" variant="PLAIN" size="SMALL" onClick={() => setIsOpen(false)} className="min-w-[100px]" />
-                <Button text="Simpan" variant="PRIMARY" size="SMALL" onClick={handleSave} disabled={disabledApply} className="min-w-[100px]" />
-              </div>
+          ) : (
+            <div ref={modalRef} style={{ position: "fixed", ...position, zIndex: 9999 }} className="bg-white rounded-lg p-6 max-w-[720px] shadow-lg border overflow-hidden">
+              {CalendarContent}
             </div>
-          </div>,
+          ),
           document.body,
         )}
     </>
