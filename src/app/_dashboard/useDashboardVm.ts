@@ -69,6 +69,7 @@ export function useDashboardViewModel() {
 
     try {
       const res = await claim(id);
+    
       if (res?.status === 200) {
         showToast("Lead berhasil diklaim", "SUCCESS");
 
@@ -99,6 +100,7 @@ export function useDashboardViewModel() {
     } catch (error: any) {
       showToast(error.message, "ERROR");
     } finally {
+      setIsModalOpen(false)
       setLoading(false);
     }
 
