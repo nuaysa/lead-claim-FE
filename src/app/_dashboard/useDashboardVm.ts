@@ -102,6 +102,7 @@ export function useDashboardViewModel() {
     } finally {
       setIsModalOpen(false)
       setLoading(false);
+      fetchSalesClaim();
     }
 
     await Promise.allSettled([fetchAllLeads(), fetchMyLeads()]);
