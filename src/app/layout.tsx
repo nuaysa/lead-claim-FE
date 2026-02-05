@@ -6,7 +6,7 @@ import ClientLayout from "@/components/layout/ClientLayout";
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "LeadClaim - Manajemen Lead",
+  title: "Powersurya CRM - Manajemen Lead",
   description: "Manajemen lead untuk tim penjualan Anda",
 };
 
