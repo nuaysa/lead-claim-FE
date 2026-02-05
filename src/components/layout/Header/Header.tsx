@@ -59,7 +59,7 @@ export default function Header() {
                 <button
                   type="button"
                   onClick={() => {
-                    router.push("/register");
+                    router.push("/reset-password");
                   }}
                   className="flex items-center gap-2 text-sm text-black hover:bg-neutral-gray1 w-full px-2 py-2 rounded transition-colors cursor-pointer"
                 >
