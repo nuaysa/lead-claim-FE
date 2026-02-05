@@ -297,11 +297,11 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
       {isOpen &&
         createPortal(
           isMobile ? (
-            <div className="fixed inset-0 z-[9999] bg-black/40 flex items-end">
+            <div className="absolute inset-0 z-[9999] bg-black/40 flex items-end">
               <div className="w-full bg-white rounded-t-2xl p-4 max-h-[90vh] overflow-y-auto">{CalendarContent}</div>
             </div>
           ) : (
-            <div ref={modalRef} style={{ position: "fixed", ...position, zIndex: 9999 }} className="bg-white rounded-lg p-6 max-w-[720px] shadow-lg border overflow-hidden">
+            <div ref={modalRef} style={{ position: "absolute", ...position, zIndex: 9999 }} className="bg-white rounded-lg p-6 max-w-[720px] shadow-lg border overflow-hidden">
               {CalendarContent}
             </div>
           ),

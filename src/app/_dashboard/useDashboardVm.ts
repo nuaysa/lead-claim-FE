@@ -14,6 +14,8 @@ export function useDashboardViewModel() {
   const [salesStats, setSalesStats] = useState<Sales[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [currentSales, setCurrentSales] = useState<Sales | null>(null);
   const PAGE_SIZE = 10;
 
   const [leadsPage, setLeadsPage] = useState(1);
@@ -65,9 +67,9 @@ export function useDashboardViewModel() {
 
     try {
       await claim(id);
-      
+
       showToast("Lead berhasil diklaim", "SUCCESS");
-     
+
       if (!senderPhone) return;
 
       const waUrl = `https://wa.me/${senderPhone.replace(/^0/, "62")}`;
@@ -87,9 +89,8 @@ export function useDashboardViewModel() {
 
     try {
       await deleteUser(id);
-      
+
       showToast("User berhasil dihapus", "SUCCESS");
-  
     } catch (error: any) {
       showToast(error.message, "ERROR");
     } finally {
@@ -155,5 +156,9 @@ export function useDashboardViewModel() {
     myLeadsPage,
     leadsTotalPages,
     myLeadsTotalPages,
+    isModalOpen,
+    setIsModalOpen,
+    currentSales,
+    setCurrentSales,
   };
 }

@@ -8,6 +8,7 @@ import { useDashboardViewModel } from "./_dashboard/useDashboardVm";
 import CustomDatePicker from "@/components/Common/DatePicker";
 import { EmptyState } from "@/components/Common/EmptyState";
 import { useAuthContext } from "@/contexts/AuthContext";
+import ConfirmationModal from "@/components/Common/Modal";
 
 export default function Home() {
   const vm = useDashboardViewModel();
@@ -101,7 +102,16 @@ export default function Home() {
               {vm.salesStats.length === 0 ? (
                 <EmptyState title="Belum ada user" description="User belum tersedia, silahkan tambah user melalui menu pada profile." />
               ) : (
-                vm.salesStats.map((user) => <UserCard key={user.id} user={user} onDelete={() => vm.deleteUserfunc(user.id.toString())} />)
+                vm.salesStats.map((user) => (
+                  <UserCard
+                    key={user.id}
+                    user={user}
+                    onDelete={() => {
+                      vm.setCurrentSales(user);
+                      vm.setIsModalOpen(true);
+                    }}
+                  />
+                ))
               )}
               <div className="flex justify-center items-center gap-3 mt-4"></div>
             </>
@@ -161,6 +171,18 @@ export default function Home() {
           </Card>
         </div>
       </div>
+      <ConfirmationModal
+        isOpen={vm.isModalOpen}
+        onClose={() => vm.setIsModalOpen(false)}
+        variant="danger"
+        title="Hapus User?"
+        description={<>Anda yakin ingin menghapus user ini? Tindakan ini tidak dapat dibatalkan.</>}
+        confirmText="Hapus"
+        cancelText="Batal"
+        onConfirm={() => {
+          vm.deleteUserfunc(vm.currentSales!.id.toString());
+        }}
+      />
     </div>
   );
 }
@@ -215,7 +237,7 @@ function UserCard({ user, onDelete }: { user: any; onDelete?: () => void }) {
         </div>
       </span>
 
-      {onDelete && <Button icon={<Trash2 size={20}/>} variant="DANGER" className="w-10 h-10" onClick={onDelete} />}
+      {onDelete && <Button icon={<Trash2 size={20} />} variant="DANGER" className="w-10 h-10" onClick={onDelete} />}
     </Card>
   );
 }
