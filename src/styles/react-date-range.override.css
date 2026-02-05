@@ -1,3 +1,7 @@
+.rdrCalendarWrapper,
+.rdrDateRangeWrapper {
+  width: 100% !important;
+}
 
 .rdrDayInRange .rdrDayNumber span {
   color: #c1123d !important; 
