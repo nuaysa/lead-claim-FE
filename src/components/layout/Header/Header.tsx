@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { cn } from "@/utils/helpers";
-import { LogOut, Plus, ZapIcon } from "lucide-react";
+import { KeyRound, LogOut, Plus, ZapIcon } from "lucide-react";
 
 export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -56,13 +56,23 @@ export default function Header() {
                   <p className="text-xs text-neutral-gray1">Admin</p>
                 </div>
               </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    router.push("/register");
+                  }}
+                  className="flex items-center gap-2 text-sm text-black hover:bg-neutral-gray1 w-full px-2 py-2 rounded transition-colors cursor-pointer"
+                >
+                  <KeyRound className="w-4 h-4" />
+                  Reset Password
+                </button>
               {userRole === "ADMIN" && (
                 <button
                   type="button"
                   onClick={() => {
                     router.push("/register");
                   }}
-                  className="flex items-center gap-2 text-sm text-semantic-red1 hover:bg-semantic-red3 w-full px-2 py-2 rounded transition-colors cursor-pointer"
+                  className="flex items-center gap-2 text-sm text-black hover:bg-neutral-gray1 w-full px-2 py-2 rounded transition-colors cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
                   Tambah User

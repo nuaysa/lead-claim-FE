@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { cn } from "@/utils/helpers";
-import { LogOut, Menu, X, Users, Settings, FileText, ChevronRight, ZapIcon } from "lucide-react";
+import { LogOut, Menu, X, Users, Settings, FileText, ChevronRight, ZapIcon, KeyRound } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export default function MobileHeader() {
@@ -28,6 +28,11 @@ export default function MobileHeader() {
   }, []);
 
   const navItems = [
+    {
+      name: "Reset Password",
+      href: "/reset-password",
+      icon: KeyRound,
+    }
   ];
 
   if (userRole === "ADMIN") {

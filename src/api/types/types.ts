@@ -15,6 +15,11 @@ export type RegisterParams = {
   password: string;
 };
 
+export type ResetPassParams = {
+  password: string;
+  confirmPassword: string;
+};
+
 export type LogoutParam = {
   token: string;
 };
