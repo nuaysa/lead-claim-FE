@@ -8,7 +8,10 @@ import { useRouter } from "next/navigation";
 
 export const ResetPasswordSchema = yup.object({
   password: yup.string().required("* Password wajib diisi"),
-  confirmPassword: yup.string().required("* Password wajib diisi"),
+  confirmPassword: yup
+    .string()
+    .required("* Password wajib diisi")
+    .oneOf([yup.ref("password")], "* Password tidak sama"),
 });
 
 export type ResetPasswordFormValues = yup.InferType<typeof ResetPasswordSchema>;
@@ -54,8 +57,6 @@ export function useResetPasswordViewModel() {
     try {
       const res = await resetPassword({ password: data.password, confirmPassword: data.confirmPassword });
       if (res?.status === 200) {
-        
-
         setTimeout(() => {}, 100);
 
         showToast("Reset Password Sukses", "SUCCESS");

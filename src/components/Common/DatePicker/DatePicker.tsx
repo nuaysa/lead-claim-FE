@@ -151,8 +151,8 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
       const inputRect = inputRef.current!.getBoundingClientRect();
       const modalRect = modalRef.current!.getBoundingClientRect();
 
-      let top = inputRect.bottom + window.scrollY + 8;
-      let left = inputRect.left + window.scrollX;
+      let top = inputRect.bottom + 8;
+      let left = inputRect.left;
 
       // kanan
       if (left + modalRect.width > window.innerWidth) {
@@ -163,8 +163,8 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
       if (left < 10) left = 10;
 
       // bawah → flip ke atas
-      if (top + modalRect.height > window.innerHeight + window.scrollY) {
-        top = inputRect.top + window.scrollY - modalRect.height - 8;
+      if (top + modalRect.height > window.innerHeight) {
+        top = inputRect.top - modalRect.height - 8;
       }
 
       // kalau masih kepotong atas → paksa turun
@@ -265,7 +265,7 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
 
       {isOpen &&
         createPortal(
-          <div ref={modalRef} style={{ position: "fixed", ...position, zIndex: 9999 }} className="bg-white rounded-lg p-6 w-max h-max shadow-lg border border-neutral-gray2">
+          <div ref={modalRef} style={{ position: "fixed", ...position, zIndex: 9999 }} className="bg-white rounded-lg p-6 max-w-[95vw] h-max shadow-lg border border-neutral-gray2">
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-1">
                 {mode === "range" ? (
