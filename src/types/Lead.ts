@@ -6,10 +6,12 @@ export interface Lead {
   source?: string;
   status: string;
   requestDate: Date;
+  message?: string;
 }
 export interface Sales {
   id: number;
   name: string;
   totalClaimed: number;
   percentage: number;
+  email?: string;
 }

@@ -9,6 +9,7 @@ import CustomDatePicker from "@/components/Common/DatePicker";
 import { EmptyState } from "@/components/Common/EmptyState";
 import { useAuthContext } from "@/contexts/AuthContext";
 import ConfirmationModal from "@/components/Common/Modal";
+import { Lead, Sales } from "@/types/Lead";
 
 export default function Home() {
   const vm = useDashboardViewModel();
@@ -199,29 +200,42 @@ function TabButton({ active, label, onClick }: { active: boolean; label: string;
   );
 }
 
-function LeadCard({ lead, onClaim }: { lead: any; onClaim?: () => void }) {
+function LeadCard({ lead, onClaim }: { lead: Lead; onClaim?: () => void }) {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
-    <Card className="w-full hover:border hover:border-primary-red px-5 flex items-center justify-between rounded-3xl">
-      <span className="flex gap-5">
-        <div className="bg-neutral-gray4 h-15 w-15 rounded-2xl flex justify-center items-center text-xl text-neutral-gray1">
-          <User2 />
-        </div>
+    <Card className="w-full hover:border hover:border-primary-red px-5 rounded-3xl">
+      <div className="flex flex-col gap-4">
+        <div className=" flex  items-center justify-between">
+          <span className="flex gap-5 justify-between items-center">
+            <div className="bg-neutral-gray4 h-15 w-15 rounded-2xl flex justify-center items-center text-xl text-neutral-gray1">
+              <User2 />
+            </div>
 
-        <div className="flex flex-col gap-1 font-bold">
-          <h1 className="text-lg text-neutral-black">{lead.name ?? "Unknown Lead"}</h1>
-          <span className="flex gap-4 text-xs">
-            <p className="text-neutral-gray1">{lead.phone}</p>
-            <p className="text-semantic-red3">{new Date(lead.requestDate).toLocaleTimeString("id-ID")}</p>
+            <div className="flex flex-col gap-1 font-bold">
+              <h1 className="text-lg text-neutral-black">{lead.name ?? "Unknown Lead"}</h1>
+              <span className="flex gap-4 text-xs">
+                <p className="text-neutral-gray1">{lead.phone}</p>
+                <p className="text-semantic-red3">{new Date(lead.requestDate).toLocaleTimeString("id-ID")}</p>
+              </span>
+            </div>
+          </span>
+          <span className="flex gap-3 justify-center items-center">
+            <Button size="ICON" variant="OUTLINE" icon={<InfoIcon />} onClick={() => isOpen === false ? setIsOpen(true) : setIsOpen(false)} />
+            {onClaim && <Button text="KLAIM" variant="BLACK" className="w-30" onClick={onClaim} />}
           </span>
         </div>
-      </span>
-
-      {onClaim && <Button text="KLAIM" variant="BLACK" className="w-30" onClick={onClaim} />}
+        {isOpen && (
+          <div className="bg-primary-surface rounded-2xl text-primary-main p-3">
+            <p className="font-semibold text-md">Message:</p>
+            <p className="px-2">{lead.message}</p>
+          </div>
+        )}
+      </div>
     </Card>
   );
 }
 
-function UserCard({ user, onDelete }: { user: any; onDelete?: () => void }) {
+function UserCard({ user, onDelete }: { user: Sales; onDelete?: () => void }) {
   return (
     <Card className="w-full hover:border hover:border-primary-red px-5 flex items-center justify-between rounded-3xl">
       <span className="flex gap-5">

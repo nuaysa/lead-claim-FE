@@ -61,7 +61,7 @@ export function useDashboardViewModel() {
       setLoading(false);
     }
   };
-
+  
 const claimLead = async (id: number, senderPhone?: string) => {
   if (!senderPhone) return;
 
@@ -75,13 +75,14 @@ const claimLead = async (id: number, senderPhone?: string) => {
     await claim(id);
     showToast("Lead berhasil diklaim", "SUCCESS");
   } catch (error: any) {
-    showToast(error.message, "ERROR");
+    showToast(error?.message || "Error Exception API", "ERROR");
   } finally {
     setLoading(false);
   }
 
   await Promise.allSettled([fetchAllLeads(), fetchMyLeads()]);
 };
+
 
 
   const deleteUserfunc = async (id: string) => {
