@@ -12,11 +12,11 @@ export function useDashboardViewModel() {
   const [loading, setLoading] = useState(false);
   const PAGE_SIZE = 5;
 
-  const [leadsPage, setLeadsPage] = useState(1);
-  const [myLeadsPage, setMyLeadsPage] = useState(1);
+  const [leadsPage, setLeadsPage] = useState<number>(1);
+  const [myLeadsPage, setMyLeadsPage] = useState<number>(1);
 
-  const [leadsTotalPages, setLeadsTotalPages] = useState(1);
-  const [myLeadsTotalPages, setMyLeadsTotalPages] = useState(1);
+  const [leadsTotalPages, setLeadsTotalPages] = useState<number>(1);
+  const [myLeadsTotalPages, setMyLeadsTotalPages] = useState<number>(1);
 
   const fetchAllLeads = async (page = 1) => {
     try {
@@ -28,7 +28,7 @@ export function useDashboardViewModel() {
       });
       setLeads(res.data ?? []);
       setLeadsPage(res.pagination.page);
-      setLeadsTotalPages(res.pagination.totalPages ?? 1);
+      setLeadsTotalPages(res.pagination.totalPages);
     } catch (error: any) {
       showToast(error.message, "ERROR");
     } finally {
@@ -38,15 +38,15 @@ export function useDashboardViewModel() {
   const fetchMyLeads = async (page = 1) => {
     try {
       setLoading(true);
-      
+
       const res = await getMyLeads({
         page,
         limit: PAGE_SIZE,
       });
-      
+
       setMyLeads(res.data ?? []);
       setMyLeadsPage(res.pagination.page);
-      setMyLeadsTotalPages(res.pagination.totalPages ?? 1);
+      setMyLeadsTotalPages(res.pagination.totalPages);
     } catch (error: any) {
       showToast(error.message, "ERROR");
     } finally {

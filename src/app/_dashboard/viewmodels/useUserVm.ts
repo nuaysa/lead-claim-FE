@@ -38,10 +38,8 @@ import * as yup from "yup";
 export const useUserVM = () => {
   const [User, setUser] = useState<Sales[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isLoadingData, setIsLoadingData] = useState<boolean>(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [totalItems, setTotalItems] = useState<number>(0);
   const [mode, setMode] = useState<"create" | "edit">("create");
   const [selectedItem, setSelectedItem] = useState<Sales | null>(null);
   const [salesParams, setSalesParams] = useState<getSalesParams>({});
@@ -51,8 +49,6 @@ export const useUserVM = () => {
 
   const [salesStats, setSalesStats] = useState<Sales[]>([]);
   const { showToast } = useToast();
-
-
 
   const UserForm = useForm<UserFormValue>({
     resolver: yupResolver(mode === "create" ? createUserSchema : editUserSchema) as any,
@@ -75,9 +71,9 @@ export const useUserVM = () => {
         const items = res.data.data ?? [];
 
         setSalesStats(items);
-        setSalesPage(res.pagination.page);
-        setSalesTotalPages(res.pagination.totalPages ?? 1);
-        setTotalItems(res.pagination.totalItems ?? 1);
+        setSalesPage(res.data.pagination.page ??1);
+        setSalesTotalPages(res.data.pagination.totalPages ?? 1);
+
       } catch (error: any) {
         showToast(error.message, "ERROR");
       } finally {
@@ -95,10 +91,6 @@ export const useUserVM = () => {
 
     setSalesParams(params);
   };
-
-  useEffect(() => {
-    fetchSalesClaim();
-  }, [salesParams]);
 
   const fetchData = useCallback(async () => {
     await fetchSalesClaim();
@@ -186,11 +178,8 @@ export const useUserVM = () => {
   return {
     User,
     isLoading,
-    isLoadingData,
     isCreateModalOpen,
     isModalOpen,
-    totalItems,
-
     mode,
     selectedItem,
     UserForm,
