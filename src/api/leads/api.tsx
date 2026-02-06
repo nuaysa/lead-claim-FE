@@ -3,7 +3,7 @@ import { axios } from "@/api/index";
 import { getSalesParams } from "../types/types";
 import { createURLParams } from "@/utils/helpers";
 
-export function getMyLeads(params?: { page?: number; limit?: number }) {
+export function getMyLeads(params?: { page: number; limit: number }) {
   const queryParams = createURLParams({
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
@@ -27,10 +27,7 @@ export function getSalesClaims(params: getSalesParams) {
   });
 }
 
-export function getUnclaimedLeads(params?: {
-  page?: number;
-  limit?: number;
-}) {
+export function getUnclaimedLeads(params?: { page: number; limit: number }) {
   const queryParams = createURLParams({
     page: params?.page ?? 1,
     limit: params?.limit ?? 5,
