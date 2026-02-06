@@ -7,14 +7,12 @@ const fields: Field<UserFormValue>[] = [
     name: "name",
     label: "Nama user",
     type: "text",
-    required: true,
     placeholder: "Masukkan nama user",
   },
   {
     name: "role",
     label: "Role",
     type: "select",
-    required: true,
     placeholder: "Pilih role user",
     options: [
       {
