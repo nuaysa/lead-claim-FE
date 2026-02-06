@@ -46,9 +46,10 @@ export default function Home() {
             </div>
 
             <Button
-              icon={<RefreshCcw />}
+              icon={<RefreshCcw width={20} />}
               variant="OUTLINE"
               isLoading={vm.loading}
+              className="my-1"
               onClick={() => {
                 if (activeTab === "UNCLAIMED") {
                   vm.fetchAllLeads(vm.leadsPage);
