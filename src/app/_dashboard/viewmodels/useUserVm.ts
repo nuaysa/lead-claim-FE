@@ -71,8 +71,8 @@ export const useUserVM = () => {
         const items = res.data.data ?? [];
 
         setSalesStats(items);
-        setSalesPage(res.data.pagination.page ??1);
-        setSalesTotalPages(res.data.pagination.totalPages ?? 1);
+        setSalesPage(res.pagination.page ??1);
+        setSalesTotalPages(res.pagination.totalPages ?? 1);
 
       } catch (error: any) {
         showToast(error.message, "ERROR");
