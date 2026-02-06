@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { cn } from "@/utils/helpers";
-import { KeyRound, LogOut,  ZapIcon } from "lucide-react";
+import { KeyRound, LogOut, ZapIcon } from "lucide-react";
+import Image from "next/image";
 
 export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -28,9 +29,8 @@ export default function Header() {
   return (
     <header className="w-full fixed top-0 flex items-center justify-between bg-neutral-white border-b px-8 h-20 z-40">
       <div className="flex items-center gap-6">
-        <Link href="/" className="flex cursor-pointer items-center mx-4 text-white">
-          <ZapIcon color="white" className="bg-linear-to-r from-primary-main to-primary-hover shadow-2xs h-10 w-10 p-2 rounded-xl" size={25} />
-          <p className="text-lg text-neutral-black font-bold leading-tight mx-3">Powersurya CRM</p>
+        <Link href="/" className="flex items-center gap-3 mx-4">
+          <Image src="/logo.png" alt="Powersurya CRM" width={45} height={45} className="object-contain p-2 bg-primary-surface rounded-xl" /> <p className="text-lg text-neutral-black font-bold leading-tight mx-3">Powersurya CRM</p>
         </Link>
       </div>
 
@@ -55,16 +55,16 @@ export default function Header() {
                   <p className="text-xs text-neutral-gray1">Admin</p>
                 </div>
               </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    router.push("/reset-password");
-                  }}
-                  className="flex items-center gap-2 text-sm text-black hover:bg-neutral-gray1 w-full px-2 py-2 rounded transition-colors cursor-pointer"
-                >
-                  <KeyRound className="w-4 h-4" />
-                  Reset Password
-                </button>
+              <button
+                type="button"
+                onClick={() => {
+                  router.push("/reset-password");
+                }}
+                className="flex items-center gap-2 text-sm text-black hover:bg-neutral-gray1 w-full px-2 py-2 rounded transition-colors cursor-pointer"
+              >
+                <KeyRound className="w-4 h-4" />
+                Reset Password
+              </button>
               <button
                 type="button"
                 onClick={() => {

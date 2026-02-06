@@ -6,6 +6,7 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import { cn } from "@/utils/helpers";
 import { LogOut, Menu, X, ChevronRight, ZapIcon, KeyRound } from "lucide-react";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 export default function MobileHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -40,7 +41,8 @@ export default function MobileHeader() {
       <div className="flex items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-3">
           <div className="relative">
-            <ZapIcon color="white" className="bg-linear-to-r from-primary-main to-primary-hover shadow-2xs h-10 w-10 p-2 rounded-xl" size={25} />
+             <Image src="/logo.png" alt="Powersurya CRM" width={40} height={40} className="object-contain p-2 bg-primary-surface rounded-xl" /> 
+              
           </div>
           <p className="text-lg font-bold text-black">Powersurya CRM</p>
         </Link>
