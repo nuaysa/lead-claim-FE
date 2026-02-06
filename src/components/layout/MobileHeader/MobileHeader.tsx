@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { cn } from "@/utils/helpers";
-import { LogOut, Menu, X, Users, Settings, FileText, ChevronRight, ZapIcon, KeyRound } from "lucide-react";
+import { LogOut, Menu, X, ChevronRight, ZapIcon, KeyRound } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export default function MobileHeader() {
@@ -34,14 +34,6 @@ export default function MobileHeader() {
       icon: KeyRound,
     }
   ];
-
-  if (userRole === "ADMIN") {
-    navItems.push({
-      name: "Daftarkan akun",
-      href: "/register",
-      icon: Users,
-    });
-  }
 
   return (
     <header className="sticky top-0 w-full bg-white border-b border-neutral-gray2 z-50">

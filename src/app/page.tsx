@@ -3,16 +3,21 @@
 import { useState } from "react";
 import Button from "@/components/Common/Button/Button";
 import Card from "@/components/Common/Card";
-import { Calendar, CheckCircle, Database, Flame, InfoIcon, RefreshCcw, Trash2, User2 } from "lucide-react";
-import { useDashboardViewModel } from "./_dashboard/useDashboardVm";
+import { Calendar, CheckCircle, Database, Flame, InfoIcon, PlusCircle, RefreshCcw } from "lucide-react";
+import { useDashboardViewModel } from "./_dashboard/viewmodels/useDashboardVm";
 import CustomDatePicker from "@/components/Common/DatePicker";
 import { EmptyState } from "@/components/Common/EmptyState";
 import { useAuthContext } from "@/contexts/AuthContext";
 import ConfirmationModal from "@/components/Common/Modal";
-import { Lead, Sales } from "@/types/Lead";
+import { LeadCard, SummaryCard, UserCard } from "./_dashboard/components/Cards";
+import TabButton from "./_dashboard/components/TabButton";
+import Pagination from "./_dashboard/components/Pagination";
+import { useUserVM } from "./_dashboard/viewmodels/useUserVm";
+import UsersCreateModal from "./_dashboard/components/Users/UsersModal";
 
 export default function Home() {
   const vm = useDashboardViewModel();
+  const userVm = useUserVM();
 
   const { userProfile } = useAuthContext();
   const userRole = userProfile?.role;
@@ -37,7 +42,7 @@ export default function Home() {
             <div className="flex gap-2">
               <TabButton active={activeTab === "UNCLAIMED"} onClick={() => setActiveTab("UNCLAIMED")} label="Antrean Customer Baru" />
               <TabButton active={activeTab === "CLAIMED"} onClick={() => setActiveTab("CLAIMED")} label="Sudah Diklaim" />
-              {isAdmin ? <TabButton active={activeTab === "USERS"} onClick={() => setActiveTab("USERS")} label="Dafter Users" /> : null}
+              {isAdmin ? <TabButton active={activeTab === "USERS"} onClick={() => setActiveTab("USERS")} label="Daftar Users" /> : null}
             </div>
 
             <Button
@@ -48,7 +53,7 @@ export default function Home() {
                 if (activeTab === "UNCLAIMED") {
                   vm.fetchAllLeads(vm.leadsPage);
                 } else {
-                  vm.fetchMyLeads(vm.myLeadsPage);
+                  vm.fetchMyLeads(vm.leadsPage);
                 }
               }}
             />
@@ -70,51 +75,47 @@ export default function Home() {
                   />
                 ))
               )}
-
-              <div className="flex justify-center items-center gap-3 mt-4">
-                <Button text="Prev" variant="OUTLINE" disabled={vm.leadsPage === 1} onClick={() => vm.fetchAllLeads(vm.leadsPage - 1)} />
-
-                <span className="text-sm font-bold text-primary-hover">
-                  Page {vm.leads.length === 0 ? 0 : vm.leadsPage} / {vm.leadsTotalPages}
-                </span>
-
-                <Button text="Next" variant="OUTLINE" disabled={vm.leadsPage >= vm.leadsTotalPages} onClick={() => vm.fetchAllLeads(vm.leadsPage + 1)} />
-              </div>
+              <Pagination currentPage={vm.leadsPage} totalPage={vm.leadsTotalPages} data={vm.leads} NextPage={(page) => vm.fetchAllLeads(page)} />
             </>
           )}
 
           {activeTab === "CLAIMED" && (
             <>
               {vm.myLeads.length === 0 ? <EmptyState title="Belum ada customer" description="Kamu belum mengklaim customer." /> : vm.myLeads.map((lead) => <LeadCard key={lead.id} lead={lead} />)}
-              <div className="flex justify-center items-center gap-3 mt-4">
-                <Button text="Prev" variant="OUTLINE" disabled={vm.myLeadsPage === 1} onClick={() => vm.fetchMyLeads(vm.myLeadsPage - 1)} />
 
-                <span className="text-sm font-bold text-primary-hover">
-                  Page {vm.myLeads.length === 0 ? 0 : vm.myLeadsPage} / {vm.myLeadsTotalPages}
-                </span>
-
-                <Button text="Next" variant="OUTLINE" disabled={vm.myLeadsPage >= vm.myLeadsTotalPages} onClick={() => vm.fetchMyLeads(vm.myLeadsPage + 1)} />
-              </div>
+              <Pagination currentPage={vm.myLeadsPage} totalPage={vm.myLeadsTotalPages} data={vm.myLeads} NextPage={(page) => vm.fetchMyLeads(page)} />
             </>
           )}
 
           {userRole === "ADMIN" && activeTab === "USERS" && (
             <>
-              {vm.salesStats.length === 0 ? (
-                <EmptyState title="Belum ada user" description="User belum tersedia, silahkan tambah user melalui menu pada profile." />
+              {userVm.salesStats.length === 0 ? (
+                <EmptyState title="Belum ada user" description="User belum tersedia, silahkan tambah user melalui Button di bawah ini" />
               ) : (
-                vm.salesStats.map((user) => (
+                userVm.salesStats.map((user) => (
                   <UserCard
                     key={user.id}
                     user={user}
                     onDelete={() => {
-                      vm.setCurrentSales(user);
-                      vm.setIsModalOpen(true);
+                      userVm.setIsCreateModalOpen(false);
+                      userVm.setSelectedItem(user);
+                      userVm.setIsModalOpen(true);
+                    }}
+                    onEdit={() => {
+                      userVm.handleOpenEditModal(user);
                     }}
                   />
                 ))
               )}
-              <div className="flex justify-center items-center gap-3 mt-4"></div>
+              <Button
+                className="w-full"
+                icon={<PlusCircle />}
+                text="Tambah User"
+                onClick={() => {
+                  userVm.handleOpenCreateModal();
+                }}
+              />
+              <Pagination currentPage={userVm.salesPage} totalPage={userVm.salesTotalPages} data={userVm.salesStats} NextPage={(page) => userVm.fetchSalesClaim({ page: page })} />
             </>
           )}
         </div>
@@ -137,15 +138,15 @@ export default function Home() {
                     end: value.end,
                   });
 
-                  vm.applySalesDateRange(value.start.toString().slice(0, 10), value.end.toString().slice(0, 10));
+                  userVm.applySalesDateRange(value.start.toString().slice(0, 10), value.end.toString().slice(0, 10));
                 }
               }}
             />
 
-            {vm.salesStats.length === 0 ? (
+            {userVm.salesStats.length === 0 ? (
               <EmptyState title="Belum ada data" description="Tidak ada klaim pada rentang tanggal ini." />
             ) : (
-              vm.salesStats.map((sales) => (
+              userVm.salesStats.map((sales) => (
                 <div key={sales.id} className="flex flex-col gap-1">
                   <div className="flex justify-between text-sm font-bold">
                     <span className="text-primary-main">{sales.name}</span>
@@ -172,102 +173,21 @@ export default function Home() {
           </Card>
         </div>
       </div>
+
+      <UsersCreateModal isOpen={userVm.isCreateModalOpen} onClose={() => userVm.setIsCreateModalOpen(false)} vm={userVm} />
+
       <ConfirmationModal
-        isOpen={vm.isModalOpen}
-        onClose={() => vm.setIsModalOpen(false)}
+        isOpen={userVm.isModalOpen}
+        onClose={() => userVm.setIsModalOpen(false)}
         variant="danger"
         title="Hapus User?"
         description={<>Anda yakin ingin menghapus user ini? Tindakan ini tidak dapat dibatalkan.</>}
         confirmText="Hapus"
         cancelText="Batal"
         onConfirm={() => {
-          vm.deleteUserfunc(vm.currentSales!.id.toString());
+          userVm.handleDelete(userVm.selectedItem!.id.toString());
         }}
       />
     </div>
-  );
-}
-
-function TabButton({ active, label, onClick }: { active: boolean; label: string; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`px-4 py-2 font-bold text-sm border-b-2 transition
-        ${active ? "border-primary-main text-primary-main" : "border-transparent text-neutral-gray1"}`}
-    >
-      {label}
-    </button>
-  );
-}
-
-function LeadCard({ lead, onClaim }: { lead: Lead; onClaim?: () => void }) {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  return (
-    <Card className="w-full hover:border hover:border-primary-red px-2 md:px-5 rounded-3xl">
-      <div className="flex flex-col gap-4">
-        <div className=" flex  items-center justify-between">
-          <span className="flex gap-5 justify-between items-center">
-            <div className="bg-neutral-gray4 h-15 w-15 rounded-2xl flex justify-center items-center text-xl text-neutral-gray1">
-              <User2 />
-            </div>
-
-            <div className="flex flex-col gap-1 font-bold">
-              <h1 className="text-lg text-neutral-black">{lead.name ?? "Unknown Lead"}</h1>
-              <span className="flex gap-4 text-xs">
-                <p className="text-neutral-gray1">{lead.phone}</p>
-                <p className="text-semantic-red3">{new Date(lead.requestDate).toLocaleTimeString("id-ID")}</p>
-              </span>
-            </div>
-          </span>
-          <span className="flex justify-center items-center">
-            <Button size="ICON" variant="OUTLINE" icon={<InfoIcon />} className="mr-3" onClick={() => isOpen === false ? setIsOpen(true) : setIsOpen(false)} />
-            {onClaim && <Button text="KLAIM" variant="BLACK" className="max-w-30" onClick={onClaim} />}
-          </span>
-        </div>
-        {isOpen && (
-          <div className="bg-primary-surface rounded-2xl text-primary-main p-3">
-            <p className="font-semibold text-md">Message:</p>
-            <p className="px-2">{lead.message}</p>
-          </div>
-        )}
-      </div>
-    </Card>
-  );
-}
-
-function UserCard({ user, onDelete }: { user: Sales; onDelete?: () => void }) {
-  return (
-    <Card className="w-full hover:border hover:border-primary-red px-5 flex items-center justify-between rounded-3xl">
-      <span className="flex gap-5">
-        <div className="bg-neutral-gray4 h-15 w-15 rounded-2xl flex justify-center items-center text-xl text-neutral-gray1">
-          <User2 />
-        </div>
-
-        <div className="flex flex-col gap-1 font-bold">
-          <h1 className="text-lg text-neutral-black">{user.name ?? "Unknown user"}</h1>
-          <span className="flex gap-4 text-xs">
-            <p className="text-neutral-gray1">{user.email}</p>
-          </span>
-        </div>
-      </span>
-
-      {onDelete && <Button icon={<Trash2 size={20} />} variant="DANGER" className="w-10 h-10" onClick={onDelete} />}
-    </Card>
-  );
-}
-
-function SummaryCard({ icon, title, value, color }: { icon: React.ReactNode; title: string; value: string; color: "primary" | "yellow" | "green" }) {
-  const bg = color === "primary" ? "bg-primary-surface text-primary-main" : color === "yellow" ? "bg-semantic-yellow3 text-semantic-yellow1" : "bg-semantic-green3 text-semantic-green1";
-
-  return (
-    <Card className="w-full lg:w-1/3 py-6 px-5">
-      <div className="flex gap-3">
-        <div className={`${bg} h-15 w-15 rounded-2xl flex justify-center items-center text-xl`}>{icon}</div>
-        <div className="flex flex-col gap-1 font-bold">
-          <h1 className="text-sm text-neutral-gray1 uppercase">{title}</h1>
-          <p className="text-2xl font-extrabold text-neutral-black">{value}</p>
-        </div>
-      </div>
-    </Card>
   );
 }

@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { cn } from "@/utils/helpers";
-import { KeyRound, LogOut, Plus, ZapIcon } from "lucide-react";
+import { KeyRound, LogOut,  ZapIcon } from "lucide-react";
 
 export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -14,7 +14,6 @@ export default function Header() {
   const { userProfile, logout } = useAuthContext();
 
   const profile = userProfile?.name.toUpperCase().charAt(0);
-  const userRole = userProfile?.role;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -66,18 +65,6 @@ export default function Header() {
                   <KeyRound className="w-4 h-4" />
                   Reset Password
                 </button>
-              {userRole === "ADMIN" && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    router.push("/register");
-                  }}
-                  className="flex items-center gap-2 text-sm text-black hover:bg-neutral-gray1 w-full px-2 py-2 rounded transition-colors cursor-pointer"
-                >
-                  <Plus className="w-4 h-4" />
-                  Tambah User
-                </button>
-              )}
               <button
                 type="button"
                 onClick={() => {

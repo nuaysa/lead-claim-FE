@@ -1,6 +1,8 @@
 export interface getSalesParams {
-start?: string;
+  start?: string;
   end?: string;
+  page?: number;
+  limit?: number;
 }
 
 export type LoginParams = {
@@ -8,11 +10,11 @@ export type LoginParams = {
   password: string;
 };
 
-export type RegisterParams = {
-  email: string;
-  name: string;
-  role: string;
-  password: string;
+export type inputUserParams = {
+  email?: string;
+  name?: string;
+  role?: string;
+  password?: string;
 };
 
 export type ResetPassParams = {

@@ -13,5 +13,7 @@ export interface Sales {
   name: string;
   totalClaimed: number;
   percentage: number;
-  email?: string;
+  email?: string
+  password?: string
+  role: string
 }
