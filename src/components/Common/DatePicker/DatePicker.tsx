@@ -10,6 +10,7 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import "@/styles/react-date-range.override.css";
 import { useIsMobile } from "@/components/hooks/useIsMobile";
+import BottomSheetModal from "../BottomSheet";
 
 interface CustomDatePickerProps {
   placeholder: string;
@@ -297,9 +298,9 @@ export default function CustomDatePicker(props: CustomDatePickerProps) {
       {isOpen &&
         createPortal(
           isMobile ? (
-            <div className="absolute inset-0 sticky bottom-0 z-[9999] flex items-end">
-              <div className="w-full bg-white rounded-t-2xl p-4 max-h-[90vh] overflow-y-auto">{CalendarContent}</div>
-            </div>
+            <BottomSheetModal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Pilih Tanggal">
+       {CalendarContent}
+       </BottomSheetModal>
           ) : (
             <div ref={modalRef} style={{ position: "absolute", ...position, zIndex: 9999 }} className="bg-white rounded-lg p-6 max-w-[720px] shadow-lg border overflow-hidden">
               {CalendarContent}
