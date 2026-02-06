@@ -5,7 +5,7 @@ import { createURLParams } from "@/utils/helpers";
 
 export function getMyLeads(params?: { page?: number; limit?: number }) {
   const queryParams = createURLParams({
-    page: params?.page,
+    page: params?.page ?? 1,
     limit: params?.limit ?? 5,
   });
 
@@ -32,7 +32,7 @@ export function getUnclaimedLeads(params?: {
   limit?: number;
 }) {
   const queryParams = createURLParams({
-    page: params?.page,
+    page: params?.page ?? 1,
     limit: params?.limit ?? 5,
   });
 
