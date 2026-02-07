@@ -68,7 +68,7 @@ export const useUserVM = () => {
 
         const res = await getSalesClaims(params ?? salesParams);
 
-        const items = res.data.data ?? [];
+        const items = res.data ?? [];
 
         setSalesStats(items);
         setSalesPage(res.pagination.page ??1);
