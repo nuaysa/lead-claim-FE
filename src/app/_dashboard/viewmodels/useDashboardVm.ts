@@ -3,11 +3,16 @@
 import { useEffect, useState } from "react";
 import { claim, getUnclaimedLeads, getMyLeads } from "@/api/leads";
 import { useToast } from "@/contexts/ToastContext";
-import { Lead } from "@/types/Lead";
+import { Lead, Stats } from "@/types/Lead";
 
 export function useDashboardViewModel() {
   const { showToast } = useToast();
   const [leads, setLeads] = useState<Lead[]>([]);
+  const [stats, setStats] = useState<Stats>({
+    totalClaimed: 0,
+    totalLeads: 0,
+    totalUnclaimed: 0,
+  });
   const [myLeads, setMyLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(false);
   const PAGE_SIZE = 5;
@@ -27,6 +32,8 @@ export function useDashboardViewModel() {
         limit: PAGE_SIZE,
       });
       setLeads(res.data ?? []);
+      setStats(res.stats);
+      console.log(res.stats);
       setLeadsPage(res.pagination.page);
       setLeadsTotalPages(res.pagination.totalPages);
     } catch (error: any) {
@@ -92,6 +99,7 @@ export function useDashboardViewModel() {
     loading,
 
     fetchAllLeads,
+    stats,
     fetchMyLeads,
     claimLead,
     refetch,

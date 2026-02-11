@@ -31,9 +31,9 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-8 py-4 px-4 sm:px-6 lg:px-10 bg-neutral-gray4">
       <div className="flex flex-col lg:flex-row w-full gap-2 lg:gap-6">
-        <SummaryCard icon={<Database />} title="Total Lead Masuk" value={(vm.leads.length + vm.myLeads.length).toString()} color="primary" />
-        <SummaryCard icon={<Flame />} title="Siap Diklaim" value={vm.leads.length.toString()} color="yellow" />
-        <SummaryCard icon={<CheckCircle />} title="Berhasil Klaim" value={vm.myLeads.length.toString()} color="green" />
+        <SummaryCard icon={<Database />} title="Total Lead Masuk" value={vm.stats.totalLeads.toString()} color="primary" />
+        <SummaryCard icon={<Flame />} title="Siap Diklaim" value={vm.stats.totalUnclaimed.toString()} color="yellow" />
+        <SummaryCard icon={<CheckCircle />} title="Berhasil Klaim" value={`${vm.stats.totalClaimed}/${vm.stats.totalLeads}`} color="green" />
       </div>
 
       <div className="flex flex-col lg:flex-row gap-5">

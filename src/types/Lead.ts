@@ -8,12 +8,19 @@ export interface Lead {
   requestDate: Date;
   message?: string;
 }
+
 export interface Sales {
   id: number;
   name: string;
   totalClaimed: number;
   percentage: number;
-  email?: string
-  password?: string
-  role: string
+  email?: string;
+  password?: string;
+  role: string;
+}
+
+export interface Stats {
+  totalLeads: number;
+  totalClaimed: number;
+  totalUnclaimed: number;
 }
