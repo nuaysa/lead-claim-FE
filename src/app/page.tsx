@@ -33,7 +33,7 @@ export default function Home() {
       <div className="flex flex-col lg:flex-row w-full gap-2 lg:gap-6">
         <SummaryCard icon={<Database />} title="Total Lead Masuk" value={vm.stats.totalLeads.toString()} color="primary" />
         <SummaryCard icon={<Flame />} title="Siap Diklaim" value={vm.stats.totalUnclaimed.toString()} color="yellow" />
-        <SummaryCard icon={<CheckCircle />} title="Klaim Anda/Total" value={`${vm.stats.totalClaimed}/${vm.stats.totalLeads}`} color="green" />
+        <SummaryCard icon={<CheckCircle />} title="Klaim Anda/Total" value={`${vm.myLeads.length}/${vm.stats.totalClaimed}`} color="green" />
       </div>
 
       <div className="flex flex-col lg:flex-row gap-5">
