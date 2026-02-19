@@ -37,7 +37,6 @@ export const createErrorResponse = (err: AxiosError<ErrorResponseData>) => {
   };
 };
 
-
 async function requestHandler(request: AxiosRequestConfig, config?: ConfigOptions) {
   if (!request.headers) request.headers = {};
 
@@ -75,19 +74,42 @@ const responseHandler = (response: AxiosResponse<APIResponse<null>>) => {
   }
 
   return response;
-};const errorHandler = async (error: AxiosError<ErrorResponseData>) => {
+};
+
+const fetchNewAccessToken = async (baseURL: string) => {
+  const refreshToken = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN) : null;
+
+  if (!refreshToken) throw new Error("No refresh token available");
+
+  const response = await fetch(`${baseURL}/auth/refresh`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ refreshToken }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Gagal refresh token, sesi mungkin sudah habis");
+  }
+
+  const data = await response.json();
+  return data.accessToken;
+};
+
+const errorHandler = async (error: AxiosError<ErrorResponseData>) => {
   const status = error.response?.status ?? 0;
   const message = error.response?.data?.message || error.message || "Terjadi kesalahan. Silakan coba lagi.";
-  
+
   const originalRequest = error.config as CustomInternalAxiosRequestConfig;
 
   if (status === 401 && originalRequest && !originalRequest._retry) {
-    originalRequest._retry = true; 
-    
+    originalRequest._retry = true;
+
     try {
-      const baseURL = originalRequest.baseURL || "";
-      
-      const newAccessToken = await refreshToken();
+      const baseURL = originalRequest.baseURL || process.env.NEXT_PUBLIC_API_URL || "";
+
+      const newAccessToken = await fetchNewAccessToken(baseURL);
 
       if (typeof window !== "undefined") {
         localStorage.setItem(STORAGE_KEYS.TOKEN, newAccessToken);
@@ -98,7 +120,6 @@ const responseHandler = (response: AxiosResponse<APIResponse<null>>) => {
       }
 
       return axios(originalRequest);
-      
     } catch (refreshError) {
       if (typeof window !== "undefined") {
         localStorage.clear();
