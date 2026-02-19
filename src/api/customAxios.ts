@@ -3,6 +3,7 @@ import { deleteCookie } from "cookies-next";
 
 import type { APIResponse, ErrorResponseData } from "./types/axios";
 import { PATHS, STORAGE_KEYS } from "@/utils/constant";
+import { refreshToken } from "./auth";
 
 type ConfigOptions = {
   isAuth?: boolean;
@@ -22,6 +23,9 @@ type AxiosConfigParams = {
   baseURL: string;
   config?: ConfigOptions;
 };
+interface CustomInternalAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
 export const createErrorResponse = (err: AxiosError<ErrorResponseData>) => {
   const message = err?.response?.data?.message || err?.message || "Error Exception API";
@@ -32,6 +36,7 @@ export const createErrorResponse = (err: AxiosError<ErrorResponseData>) => {
     status: err?.response?.data?.status || err?.response?.status || 500,
   };
 };
+
 
 async function requestHandler(request: AxiosRequestConfig, config?: ConfigOptions) {
   if (!request.headers) request.headers = {};
@@ -70,19 +75,46 @@ const responseHandler = (response: AxiosResponse<APIResponse<null>>) => {
   }
 
   return response;
-};
-const errorHandler = (error: AxiosError<ErrorResponseData>) => {
+};const errorHandler = async (error: AxiosError<ErrorResponseData>) => {
   const status = error.response?.status ?? 0;
-
   const message = error.response?.data?.message || error.message || "Terjadi kesalahan. Silakan coba lagi.";
+  
+  const originalRequest = error.config as CustomInternalAxiosRequestConfig;
 
-  if (status === 401 || status === 403) {
+  if (status === 401 && originalRequest && !originalRequest._retry) {
+    originalRequest._retry = true; 
+    
+    try {
+      const baseURL = originalRequest.baseURL || "";
+      
+      const newAccessToken = await refreshToken();
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem(STORAGE_KEYS.TOKEN, newAccessToken);
+      }
+
+      if (originalRequest.headers) {
+        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+      }
+
+      return axios(originalRequest);
+      
+    } catch (refreshError) {
+      if (typeof window !== "undefined") {
+        localStorage.clear();
+        deleteCookie(STORAGE_KEYS.TOKEN);
+        window.location.href = PATHS.login;
+      }
+      return Promise.reject(refreshError);
+    }
+  }
+
+  if (status === 403) {
     if (typeof window !== "undefined") {
       localStorage.clear();
       deleteCookie(STORAGE_KEYS.TOKEN);
       window.location.href = PATHS.login;
     }
-
     return Promise.reject({ message, status });
   }
 

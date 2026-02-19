@@ -11,7 +11,6 @@ import {
   useMemo,
 } from "react";
 import { getProfile, logoutAPI } from "@/api/auth";
-import type { LogoutParam } from "@/api/types/types";
 import { STORAGE_KEYS } from "@/utils/constant";
 import AuthLoading from "@/components/Common/AuthLoading";
 
@@ -23,7 +22,7 @@ type UserProfile = {
 };
 
 type AuthContextType = {
-  afterSuccessLogin: (token: string) => Promise<void>;
+  afterSuccessLogin: (token: string, refreshToken: string) => Promise<void>;
   logout: () => Promise<void>;
   clearLogout: () => void;
   userProfile: UserProfile | null;
@@ -94,12 +93,13 @@ export default function AuthContextProvider({
     }
   }, []);
 
-  const afterSuccessLogin = useCallback(async (token: string) => {
+  const afterSuccessLogin = useCallback(async (token: string, refreshToken: string) => {
     try {
       const expiredSeconds = 60 * 60 * 24;
       
       if (typeof window !== 'undefined') {
         localStorage.setItem(STORAGE_KEYS.TOKEN, token);
+        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
       }
       
       setCookie(STORAGE_KEYS.TOKEN, token, { 

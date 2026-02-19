@@ -54,7 +54,7 @@ export function useLoginViewModel() {
     try {
       const res = await login({ data: data.data, password: data.password });
       if (res?.status === 200) {
-        afterSuccessLogin(res.token);
+        afterSuccessLogin(res.accessToken, res.refreshToken);
 
         setTimeout(() => {}, 100);
 
