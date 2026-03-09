@@ -151,7 +151,7 @@ export default function Home() {
                 <div key={sales.id} className="flex flex-col gap-1">
                   <div className="flex justify-between text-sm font-bold">
                     <span className="text-primary-main">{sales.name}</span>
-                    <span className="text-semantic-red1">{sales.percentage ?? 0}%</span>
+                    <span className="text-semantic-red1">{sales.totalClaimed} tiket/{sales.percentage ?? 0}%</span>
                   </div>
 
                   <div className="w-full h-2 bg-neutral-gray3 rounded-full">
